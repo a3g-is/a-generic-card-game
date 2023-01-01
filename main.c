@@ -28,21 +28,6 @@ int main(void){
     // pulisci la schermata che invita a mettere a schermo intero
     clear_BufferANSI();
     do{
-        // interfaccia del menu di Tragic
-        printf(ONG"                          @@@                                                                  \n");
-        printf("        @@@@,,,(@@@@@@@@@,                                             ,@@@                    \n");
-        printf("       .@       ,@@@                                                   @@                      \n");
-        printf("                ,@@@                                                  ((@(                     \n");
-        printf("                 @@@         @@@@@/@@@@@ @@@@@@@@@@     @@&(@@@@@@@@@&@@@@   *@@&(@@@@.        \n");
-        printf("                 @@@           @@@#      #@#    @@@@  (@@     @@@     @@@@  @@@(    #          \n");
-        printf("                 @@@           @@@         .@@@@@@@@  @@@@    @@@     @@@@  @@@(               \n");
-        printf("                ,@@@           @@@       @@@,  @@@@@    @@@@@@/       @@@@@@@@@@$    @@        \n");
-        printf("            @@@@@@@@@@@@@      @@@       @@@@@@  @@@@@#@@@            @@@     @@@@@@#          \n");
-        printf("                                                       .&@@@@@@@@@@@$                          \n");
-        printf("                                                      @@*        ,@@@   %sUn Gioco di Carte\n", CLR);
-        printf(ONG"                                                     (@@@       (@@@                           \n");
-        printf("                                                         (((@@@&(                              \n"CLR);
-        printf("                                                                        by Alessandro Pagano Unipg 2022\n");
         printf("Salve, straniero della gilda di Ravnika e benvenuto in Tragic!\n");
         printf("1) Imposta gioco\n2) Combatti\n3) Termina gioco\n4) Dati Giocatori\n5) Guida Gioco\n");
         printf("\nSelezionare una di queste opzioni...\n");
