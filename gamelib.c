@@ -1,70 +1,65 @@
-// librerie standard di gamelib.c
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
 #include <math.h>
-// inclusione dell'header gamelib.h
+
 #include "gamelib.h"
+
+static void init_variable(void);
+static void init_handfield(int, int);
+static void allocate_mem(void);
+static void dealloc_mem(void);
+static void scan_mage(int);
+static void scan_deck(int, Mazzo *[], Mazzo *, int *, int);
+static void print_mem(int, int, int);
+static void highlight_mem(int, int, int);
+static void thereis_deck(int, int *);
+static void draw_card(int, int *);
+static void get_arraddress(Mago **, Mazzo **, int, int, int);
+static void guide_menu(void);
+static void print_guidemenu(int *, int);
+static void mem_menu(void);
+static void game_input(char *, int *[2], int *, int *, int *);
+static void choiceof_play(int *[2], int *);
+static void targetinput_sel(int *, int, int);
+static void print_mage(int, int);
+static void print_deck(int, int, int *);
+static void sel_handsorted(int, int);
+static void arr_handsort(Mano *[], int);
+static void clear_arrbuffer(char *, int *, int);
+static void sel_targetoutput(int, int *[2], int *, int, int);
+static void print_memaddr(int, int, int);
+static void print_addr(Mazzo *[], Mazzo *, Mago *, int, int);
+static void print_gameout(int);
+static void print_playername(int, int, int);
+static void print_playerdeck(char **, int, int);
+static void check_gamefieldlayer(int *, int *, int);
+static void validate_gamefield(Mazzo *[], int *[2], int *, int, int);
+static void print_fieldtable(int, int, int);
+static void print_validchoices(int, int *[2], int *, int, int);
+static void delete_allmem(void);
+static void delete_memdata(Mago **, Mazzo **, int, int);
+static void clear_ansi(void);
+static void set_delayclock(int, int);
+static void gamemode_menu(void);
+static void magedeck_menu(int, int *);
+static void generate_card(int *);
+static void generate_hp(int *, int);
+static void transfert_card(int, int, int);
+static void create_mage(int, int, char *);
+static void create_deckand_hand(int, int, int, int);
+static void empty_magedeck(int);
+static void empty_magehand(int, int, int);
+static void add_cardtohand(int, int, int);
+static void print_magehand(Mano *[], int, int);
+static void print_gamefield(Campo *[], int, int);
 // -------------
-// posto per le dichiarazioni di funzione prototipo static void
-static void inizializza_Variabili(void);
-static void inizializza_manoCampo(int, int);
-static void alloca_Memoria(void);
-static void chiedi_deallocaMemoria(void);
-static void scan_memoriaMago(int);
-static void scan_memoriaMazzo(int, Mazzo *[], Mazzo *, int *, int);
-static void stampa_Memoria(int, int, int);
-static void evidenzia_Memoria(int, int, int);
-static void presenza_Mazzo(int, int *);
-static void memoria_Pesca(int, int *);
-static void prendi_arrIndirizzo(Mago **, Mazzo **, int, int, int);
-static void menu_Guida(void);
-static void stampa_Guida(int *, int);
-static void menu_Memoria(void);
-static void input_Gioco(char *, int *[2], int *, int *, int *);
-static void azione_Gioco(int *[2], int *);
-static void input_selTarget(int *, int, int);
-static void stampa_mago(int, int);
-static void stampa_mazzo(int, int, int *);
-static void selezione_sortArrMano(int, int);
-static void sort_arrayMano(Mano *[], int);
-static void clear_arrBuffer(char *, int *, int);
-static void passa_outputSelTar(int, int *[2], int *, int, int);
-static void stampa_indirizzoMemoria(int, int, int);
-static void stampa_Indirizzo(Mazzo *[], Mazzo *, Mago *, int, int);
-static void stampa_outputGioco(int);
-static void stampa_titoloMemoria(int, int, int);
-static void stampa_tipoMazzo(char **, int, int);
-static void trova_layerMemoria(int *, int *, int);
-static void sel_stampaDisponibili(Mazzo *[], int *[2], int *, int, int);
-static void memoria_Pesca(int, int *);
-static void stampa_sceltaMemoria(int, int, int);
-static void stampa_sceltaMenu(int, int *[2], int *, int, int);
-static void del_totaleDatiMemoria(void);
-static void elimina_datiMemoria(Mago **, Mazzo **, int, int);
-static void clear_BufferANSI(void);
-static void set_delayClock(int, int);
-static void chiedi_modeGioco(void);
-static void chiedi_magoMazzo(int, int *);
-static void generatore_Carte(int *);
-static void generatore_pv(int *, int);
-static void trasferisci_Carta(int, int, int);
-static void completamento_Mago(int, int, char *);
-static void completamento_MazzoMano(int, int, int, int);
-static void svuota_arrMagoMazzo(int);
-static void svuota_arrManoCampo(int, int, int);
-static void inc_decManoDeck(int, int, int);
-static void stampa_mano(Mano *[], int, int);
-static void stampa_campo(Campo *[], int, int);
-// -------------
-// posto per le dichiarazioni di variabili globali
 long double delay;
-int selezione_menu, sel_giocatore, tar_giocatore, sel_lato, tar_lato;
+int select_menu, select_player, target_player, select_handdeck, target_handdeck;
 int n_mago[2], n_deck[4], n_mano[4];
 bool impostato;
 // -------------
-// posto per i puntatori a struct...
 Mago *mago[4], *ptrmago, *ptr_selMago, *ptr_tarMago, *ptrmg_inizio, *ptrmg_fine;
 Mazzo *ptrmazzo, *ptr_selCarta, *ptr_tarCarta, *ptrmz_inizio[4], *ptrmz_fine[4];
 Mano *arr_Mano1[6], *arr_Mano2[6], *arr_ManoAvv[6], *arr_Mano2Avv[6];
@@ -250,7 +245,7 @@ print_choice sel_print;
 // a NULL...
 // -------------
 // inizializza i puntatori globali anche se sono stati gia' inizializzati (extern, oppure
-// chiamata a del_totaleDatiMemoria che elimina tutta la memoria e resetta i puntatori a NULL)
+// chiamata a delete_allmem che elimina tutta la memoria e resetta i puntatori a NULL)
 // per prevenire eventuali memory leak, e segmentation fault.
 
 // in questa definizione di funzione Mago* inizializza tutti i puntatori associati al mago
@@ -589,25 +584,25 @@ void imposta_gioco(int *passa_Menu, int scelta_input)
     {
     case 1:
         if (impostato == true)
-            chiedi_deallocaMemoria(); // in caso la memoria e' stata gia' allocata, altrimenti torna al menu.
+            dealloc_mem(); // in caso la memoria e' stata gia' allocata, altrimenti torna al menu.
         else
-            alloca_Memoria(); // in caso la memoria non sia stata ancora allocata, crea i giocatori, i mazzi e genera le carte casuali (Memoria dinamica).
+            allocate_mem(); // in caso la memoria non sia stata ancora allocata, crea i giocatori, i mazzi e genera le carte casuali (Memoria dinamica).
         *passa_Menu = 0; // ripeti il loop in main.c una volta che raggiunge la fine del blocco di questa funzione.
         break;
     case 2:
         if (impostato == true)
-            combatti(&selezione_menu); // se la memoria e' allocata ed il giocatore decide di giocare, inizia la partita.
+            combatti(&select_menu); // se la memoria e' allocata ed il giocatore decide di giocare, inizia la partita.
         else
         {
-            clear_BufferANSI();
+            clear_ansi();
             printf("\nImpostare il gioco prima di iniziare la partita!\n"); // ritorna un errore al termine della chiamata di questa funzione.
         }
         break;
     case 3:
-        menu_Memoria(); // Menu interattivo dedicato alla stampa in output di ogni struct e puntatori array.
+        mem_menu(); // Menu interattivo dedicato alla stampa in output di ogni struct e puntatori array.
         break;
     case 4:
-        menu_Guida(); // Menu interattivo che spiega il funzionamento del gioco.
+        guide_menu(); // Menu interattivo che spiega il funzionamento del gioco.
         break;
     default:
         printf("\nErrore: Nessun input riconosciuto, per favore riprovare.\n");
@@ -636,7 +631,7 @@ void combatti(int *passa_Menu)
         // di questa partita (verra' mostrata una volta sola dato che all'interno del ciclo
         // do while di questa funzione non verra' mai assegnato event il valore del membro _first_turn).
         event = _print_beginning;
-        stampa_outputGioco(event); // chiama la funzione che stampa la schermata di presentazione dei maghi in output.
+        print_gameout(event); // chiama la funzione che stampa la schermata di presentazione dei maghi in output.
         
         passa(&vincitore); // gestisce il primo turno scegliendo il primo mago ed il primo avversario di questa partita.
         event = _none_event; // assegna il valore del membro _non_event dopo aver stampato la schermata in output.
@@ -646,57 +641,57 @@ void combatti(int *passa_Menu)
     // e che chiedera' in input al giocatore di effettuare un azione, chiamando determinate funzioni,
     // che gestiscono numerose istruzioni.
     do{        
-        clear_BufferANSI(); // "pulisce" l'output del terminale ad ogni iterazione del ciclo, non ad ogni cambio del turno.
+        clear_ansi(); // "pulisce" l'output del terminale ad ogni iterazione del ciclo, non ad ogni cambio del turno.
 
         // stampa dell'intero campo di battaglia del gioco.
         printf("\n");
         // avversario del turno corrente.
-        stampa_sceltaMemoria(1, sel_cartaMago, tar_cartaMago);
-        stampa_sceltaMenu(avversario, prendi_selTar, &layer_Trovato, _side_mago, 6);
+        print_fieldtable(1, sel_cartaMago, tar_cartaMago);
+        print_validchoices(avversario, prendi_selTar, &layer_Trovato, _side_mago, 6);
         printf("\n\n");
         // mano avversaria.
-        stampa_sceltaMemoria(2, sel_cartaMago, tar_cartaMago);
-        stampa_sceltaMenu(avversario+1, prendi_selTar, &layer_Trovato, _side_mano, 5);
+        print_fieldtable(2, sel_cartaMago, tar_cartaMago);
+        print_validchoices(avversario+1, prendi_selTar, &layer_Trovato, _side_mano, 5);
         printf("\n-----------------------------------------------------------------------------------------------------------------------------------\n\t\t\t\t");
         // campo avversario.
-        stampa_sceltaMemoria(3, sel_cartaMago, tar_cartaMago);
-        stampa_sceltaMenu(avversario+1, prendi_selTar, &layer_Trovato, _side_campo, 4);
+        print_fieldtable(3, sel_cartaMago, tar_cartaMago);
+        print_validchoices(avversario+1, prendi_selTar, &layer_Trovato, _side_campo, 4);
         printf(BOL"\n\n\t\t\t\t\t\tTurno di "); // output di chi appartiene il turno corrente.
-        stampa_titoloMemoria(curr_giocatore, _none_side, 0);
+        print_playername(curr_giocatore, _none_side, 0);
         printf("\n\n\t\t\t\t"CLR);
         // campo del mago.
-        stampa_sceltaMemoria(4, sel_cartaMago, tar_cartaMago);
-        stampa_sceltaMenu(giocatore+1, prendi_selTar, &layer_Trovato, _side_campo, 3);
+        print_fieldtable(4, sel_cartaMago, tar_cartaMago);
+        print_validchoices(giocatore+1, prendi_selTar, &layer_Trovato, _side_campo, 3);
         printf("\n-----------------------------------------------------------------------------------------------------------------------------------\n");
         // mano del mago.
-        stampa_sceltaMemoria(5, sel_cartaMago, tar_cartaMago);
-        stampa_sceltaMenu(giocatore+1, prendi_selTar, &layer_Trovato, _side_mano, 2);
+        print_fieldtable(5, sel_cartaMago, tar_cartaMago);
+        print_validchoices(giocatore+1, prendi_selTar, &layer_Trovato, _side_mano, 2);
         printf("\n\n");
         // mago che sta giocando nel turno corrente.
-        stampa_sceltaMemoria(6, sel_cartaMago, tar_cartaMago);
-        stampa_sceltaMenu(giocatore, prendi_selTar, &layer_Trovato, _side_mago, 1);
+        print_fieldtable(6, sel_cartaMago, tar_cartaMago);
+        print_validchoices(giocatore, prendi_selTar, &layer_Trovato, _side_mago, 1);
         printf("\n");
 
         // funzione che andra' a richiedere una serie di input, richiamando questa funzione
         // un determinato numero di volte durante il turno di un giocatore.
-        input_Gioco(scelta_gioco, prendi_selTar, &fase_input, &layer_Trovato, &scelta_Selezione);
+        game_input(scelta_gioco, prendi_selTar, &fase_input, &layer_Trovato, &scelta_Selezione);
         // in base all'input che il giocatore ha inserito, se ha attivato l'effetto di una qualsiasi
-        // carta nella sua mano, oppure attacca direttamente con una creatura, allore da azione_Gioco
+        // carta nella sua mano, oppure attacca direttamente con una creatura, allore da choiceof_play
         // chiamera' gioca_carta e attacca e gestira' gli indirizzi di memoria opportuni richiesti
         // dal giocatore di gestire e deallocare eventualmente le condizioni in queste funzioni void
         // siano vere.
-        azione_Gioco(prendi_selTar, &vincitore);
+        choiceof_play(prendi_selTar, &vincitore);
     }while(vincitore <= 0 && *scelta_gioco != 'q' && *scelta_gioco != 'Q');
 
     free(scelta_gioco);
     scelta_gioco = NULL;
 
     if(event == _print_ending){
-        stampa_outputGioco(vincitore);
+        print_gameout(vincitore);
         event = _none_event;
     }
 
-    clear_BufferANSI(); // pulisce l'output prima di tornare al menu principale.
+    clear_ansi(); // pulisce l'output prima di tornare al menu principale.
 
     mem_title = _title_visible;
     *passa_Menu = 0;
@@ -711,27 +706,27 @@ void termina_gioco(int *passa_Menu)
     char *input_exit = (char *)malloc(LEN);
     int err_exit = 0;
 
-    clear_BufferANSI();
+    clear_ansi();
     do
     {
         printf("\nUscire da Tragic?\n");
         printf("\nPremi y per uscire oppure n per tornare indietro.\n");
         fgets(input_exit, LEN, stdin);
-        clear_arrBuffer(input_exit, &err_exit, 2);
+        clear_arrbuffer(input_exit, &err_exit, 2);
 
         if (*input_exit == 'y' || *input_exit == 'Y')
         {
-            clear_BufferANSI();
+            clear_ansi();
             printf("\nChiusura del gioco in corso...\n");
             fflush(stdout);
             if (impostato == true)
             {
                 printf(BOL"\nLa memoria allocata dinamicamente e' stata deallocata con successo.\n"CLR);
-                del_totaleDatiMemoria();
+                delete_allmem();
 
                 printf("\n\nPremi un tasto qualsiasi per continuare...\n");
                 getchar();
-                clear_BufferANSI();
+                clear_ansi();
             }
             printf("\nGrazie per aver giocato!\n");
             *passa_Menu = 1;
@@ -739,12 +734,12 @@ void termina_gioco(int *passa_Menu)
         }
         else if(*input_exit == 'n' || *input_exit == 'N')
         {
-            clear_BufferANSI();
+            clear_ansi();
             *passa_Menu = 0;
             continue;
         }
         else if(err_exit == 1){
-            clear_BufferANSI();
+            clear_ansi();
             printf("\nErrore: input non riconosciuto, per favore riprovare.\n\n");
             err_exit = 0;            
             continue;
@@ -755,7 +750,7 @@ void termina_gioco(int *passa_Menu)
 
 // -------------
 // body delle funzioni static void...
-static void inizializza_Variabili(void){
+static void init_variable(void){
     // inizializzazione ai primi membri (di valore 0) delle definizioni globali di alcune
     // struct globali, il motivo per cui vengono inizializzate, e' perche' nel caso il giocatore
     // decide di iniziare nuovamente una partita, pertanto queste definizioni avranno un altro
@@ -773,7 +768,7 @@ static void inizializza_Variabili(void){
     type_target = _none_event;
     return;
 }
-static void inizializza_manoCampo(int sel_Pulisci, int caso_Pulisci){
+static void init_handfield(int sel_Pulisci, int caso_Pulisci){
     int len_arr = 0;
 
     if(caso_Pulisci == _side_mano)
@@ -828,7 +823,7 @@ static void inizializza_manoCampo(int sel_Pulisci, int caso_Pulisci){
     return;
 }
 
-static void alloca_Memoria(void)
+static void allocate_mem(void)
 {
     srand((unsigned)time(&t));
     // funzione per pianificare il tipo di partita tramite menu di selezione
@@ -836,18 +831,18 @@ static void alloca_Memoria(void)
     // ------------
     // chiamata di funzione a struct che mette a NULL tutti i puntatori dichiarati
     // globalmente in gamelib.c
-    inizializza_Variabili();
+    init_variable();
     inizializza_mago();
     inizializza_mazzo();
     for(int i = 0; i < 12; i++){
-        inizializza_manoCampo(i+1, _side_mano);
-        inizializza_manoCampo(i+1, _side_campo);
+        init_handfield(i+1, _side_mano);
+        init_handfield(i+1, _side_campo);
     }
 
     // chiamata delle funzioni void che chiedono in input
     // il nome, la classe ed il numero di carte da mettere
     // nel mazzo per ogni giocatore.
-    chiedi_modeGioco();
+    gamemode_menu();
     if (mode == _1versus1 || mode == _2versus2)
     {
         giocatore = 1;
@@ -857,32 +852,32 @@ static void alloca_Memoria(void)
             printf("\nCreiamo il prossimo Mago.\n");
             else if(i == 1 || i == 3)
             printf("\nCreiamo il prossimo Mago Avversario.\n");            
-            clear_BufferANSI();
-            chiedi_magoMazzo(i + 1, &n_deck[i]);
+            clear_ansi();
+            magedeck_menu(i + 1, &n_deck[i]);
             sort_Mazzo(&ptrmz_inizio[i], n_deck[i] + 5);
 
-            completamento_MazzoMano(2, i + 1, 0, 0);
-            selezione_sortArrMano(giocatore + 1, 2);
+            create_deckand_hand(2, i + 1, 0, 0);
+            sel_handsorted(giocatore + 1, 2);
             giocatore = giocatore + 3;
         }
         giocatore = 0;
         impostato = true;
         event = _first_turn;
-        clear_BufferANSI();
+        clear_ansi();
         printf("\nImpostazioni salvate con successo.\n");
         printf("\nRitorno al menu principale.\n");
-        clear_BufferANSI();
-        set_delayClock(1, 2);
+        clear_ansi();
+        set_delayclock(1, 2);
     }
     return;
 }
 
-static void chiedi_deallocaMemoria(void)
+static void dealloc_mem(void)
 {
     char *input_conferma = (char *)malloc(LEN); // inizializza stringa
     int torna_errore = 0;
 
-    clear_BufferANSI();
+    clear_ansi();
     fflush(stdout);
     do
     {
@@ -891,12 +886,12 @@ static void chiedi_deallocaMemoria(void)
         printf("\nPremi y per confermare, n per declinare e tornare al Menu.\n");
         fflush(stdout);
         fgets(input_conferma, LEN, stdin);
-        clear_arrBuffer(input_conferma, &torna_errore, 2);
+        clear_arrbuffer(input_conferma, &torna_errore, 2);
 
         if (*input_conferma == 'y')
         {
-            clear_BufferANSI();
-            del_totaleDatiMemoria(); 
+            clear_ansi();
+            delete_allmem(); 
             // se l'input e' y allora dealloca tutta la memoria dinamica,
             // non fa distinzione se una partita e' cominciata, guarda solo la memoria
             // se e' allocata oppure no.
@@ -906,18 +901,18 @@ static void chiedi_deallocaMemoria(void)
             printf("\nPremi un tasto qualsiasi per continuare...\n");
             getchar();
 
-            alloca_Memoria();
-            clear_BufferANSI();
+            allocate_mem();
+            clear_ansi();
             break; // interrompi il ciclo, perche' l'utente ha eseguito l'operazione di deallocamento di tutta la memoria dinamica.
         }
         else if (*input_conferma == 'n')
         {
-            clear_BufferANSI();
+            clear_ansi();
             printf("\nRichiesta declinata con successo.\n");
             // memoria non verra' deallocata su richiesta dell'utente, finito lo scope, torna in main.c (funzione main).
         }
         else if(torna_errore == 1){
-            clear_BufferANSI();
+            clear_ansi();
             printf("\nErrore: input non riconosciuto, per favore riprovare.\n\n");
             torna_errore = 0;
         }
@@ -929,7 +924,7 @@ static void chiedi_deallocaMemoria(void)
 }
 // ------------
 // Scansiona la lista di una qualsiasi struct Mago.
-static void scan_memoriaMago(int passa_Mago){
+static void scan_mage(int passa_Mago){
     switch(passa_Mago){
         case -1:
         if(ptrmg_inizio == NULL) // se la lista e' vuota chiama la funzione e stampa l'errore.
@@ -961,7 +956,7 @@ static void scan_memoriaMago(int passa_Mago){
 }
 
 // Scansiona la lista di una qualsiasi struct Mazzo.
-static void scan_memoriaMazzo(int passa_Mazzo, Mazzo *passa_Arr[], Mazzo *passa_Nodo, int *passa_Deck, int tipo_Mazzo){
+static void scan_deck(int passa_Mazzo, Mazzo *passa_Arr[], Mazzo *passa_Nodo, int *passa_Deck, int tipo_Mazzo){
     switch(passa_Mazzo){
         case -4:
         if(ptrmz_inizio[3] == NULL && passa_Arr == NULL && tipo_Mazzo == _side_mazzo) // Chiamata di funzione e stampa errore.
@@ -1027,68 +1022,68 @@ static void scan_memoriaMazzo(int passa_Mazzo, Mazzo *passa_Arr[], Mazzo *passa_
 // Funzione static void dedicata alla stampa della memoria in output, indipendentemente
 // al valore del parametro interno tipo_Memoria, stampa una struct Mago oppure Mazzo,
 // stampa quindi tutti i dati disponibili per quella determinata lista.
-static void stampa_Memoria(int tipo_Memoria, int caso_Memoria, int ferma_Output){
+static void print_mem(int tipo_Memoria, int caso_Memoria, int ferma_Output){
     switch (tipo_Memoria){
         case 1:
             if(caso_Memoria == _side_mago)
-                stampa_mago(_Mago, 0); // il parametro 0, significa non evidenziare l'output (cambiare il formato in Bold).
+                print_mage(_Mago, 0); // il parametro 0, significa non evidenziare l'output (cambiare il formato in Bold).
             break;
         case 2:
             if(caso_Memoria == _side_mano)
-                stampa_mano(arr_Mano1, _ManoCampo, -1); // il parametro -1, significa non evidenziare l'output (cambiare il formato in Bold).
+                print_magehand(arr_Mano1, _ManoCampo, -1); // il parametro -1, significa non evidenziare l'output (cambiare il formato in Bold).
             else if(caso_Memoria == _side_campo)
-                stampa_campo(arr_Campo1, _ManoCampo, -1);
+                print_gamefield(arr_Campo1, _ManoCampo, -1);
             break;
         case 3:
-            stampa_mazzo(_Mazzo, n_deck[0], &ferma_Output);
+            print_deck(_Mazzo, n_deck[0], &ferma_Output);
             break;
         case 4:
             if(caso_Memoria == _side_mago)
-                stampa_mago(_Mago2, 0);
+                print_mage(_Mago2, 0);
             break;
         case 5:
             if(caso_Memoria == _side_mano)
-                stampa_mano(arr_Mano2, _ManoCampo2, -1);
+                print_magehand(arr_Mano2, _ManoCampo2, -1);
             else if(caso_Memoria == _side_campo)
-                stampa_campo(arr_Campo2, _ManoCampo2, -1);
+                print_gamefield(arr_Campo2, _ManoCampo2, -1);
             break;
         case 6:
-            stampa_mazzo(_Mazzo2, n_deck[2], &ferma_Output);
+            print_deck(_Mazzo2, n_deck[2], &ferma_Output);
             break;
         case 7:
             if(caso_Memoria == _side_mago)
-                stampa_mago(_MagoAvv, 0);
+                print_mage(_MagoAvv, 0);
             break;
         case 8:
             if(caso_Memoria == _side_mano)
-                stampa_mano(arr_ManoAvv, _ManoCampoAvv, -1);
+                print_magehand(arr_ManoAvv, _ManoCampoAvv, -1);
             else if(caso_Memoria == _side_campo)
-                stampa_campo(arr_CampoAvv, _ManoCampoAvv, -1);
+                print_gamefield(arr_CampoAvv, _ManoCampoAvv, -1);
             break;
         case 9:
-            stampa_mazzo(_MazzoAvv, n_deck[1], &ferma_Output);
+            print_deck(_MazzoAvv, n_deck[1], &ferma_Output);
             break;
         case 10:
             if(caso_Memoria == _side_mago)
-                stampa_mago(_Mago2Avv, 0);
+                print_mage(_Mago2Avv, 0);
             break;
         case 11:
             if(caso_Memoria == _side_mano)
-                stampa_mano(arr_Mano2Avv, _ManoCampo2Avv, -1);
+                print_magehand(arr_Mano2Avv, _ManoCampo2Avv, -1);
             else if(caso_Memoria == _side_campo)
-                stampa_campo(arr_Campo2Avv, _ManoCampo2Avv, -1);
+                print_gamefield(arr_Campo2Avv, _ManoCampo2Avv, -1);
             break;
         case 12:
-            stampa_mazzo(_Mazzo2Avv, n_deck[3], &ferma_Output);
+            print_deck(_Mazzo2Avv, n_deck[3], &ferma_Output);
             break;
         default:
             printf("\nErrore: nessun valore corrisponde ad una Struct da stampare!\n");
             ferma_Output = 0;
     }
     
-    scan_memoriaMago(_none_memory); // assegnazione a NULL di *ptrmago.
+    scan_mage(_none_memory); // assegnazione a NULL di *ptrmago.
     
-    // il valore di ferma_Output e' 1 solamente se la chiamata avviene da menu_Memoria, oppure
+    // il valore di ferma_Output e' 1 solamente se la chiamata avviene da mem_menu, oppure
     // indipendentemente se si vuole stampare la struct Mazzo associata a un determinato Mago.
     if(ferma_Output == 1){
         printf("\n\nPremi un tasto qualsiasi per tornare al Menu...\n");
@@ -1097,47 +1092,47 @@ static void stampa_Memoria(int tipo_Memoria, int caso_Memoria, int ferma_Output)
     return;
 }
 // ------------
-static void evidenzia_Memoria(int tipo_Arr, int caso_Evidenzia, int ev_CartaMago){
+static void highlight_mem(int tipo_Arr, int caso_Evidenzia, int ev_CartaMago){
     switch(tipo_Arr){
         case 1:
         if(caso_Evidenzia == _side_mago)
-            stampa_mago(_Mago, ev_CartaMago);
+            print_mage(_Mago, ev_CartaMago);
         break;
         case 2: case 3:
         if(caso_Evidenzia == _side_mano)
-            stampa_mano(arr_Mano1, _ManoCampo, ev_CartaMago);
+            print_magehand(arr_Mano1, _ManoCampo, ev_CartaMago);
         else if(caso_Evidenzia == _side_campo)
-            stampa_campo(arr_Campo1, _ManoCampo, ev_CartaMago);
+            print_gamefield(arr_Campo1, _ManoCampo, ev_CartaMago);
         break;
         case 4:
         if(caso_Evidenzia == _side_mago)
-            stampa_mago(_Mago2, ev_CartaMago);
+            print_mage(_Mago2, ev_CartaMago);
         break;
         case 5: case 6:
         if(caso_Evidenzia == _side_mano)
-            stampa_mano(arr_Mano2, _ManoCampo2, ev_CartaMago);
+            print_magehand(arr_Mano2, _ManoCampo2, ev_CartaMago);
         else if(caso_Evidenzia == _side_campo)
-            stampa_campo(arr_Campo2, _ManoCampo2, ev_CartaMago);
+            print_gamefield(arr_Campo2, _ManoCampo2, ev_CartaMago);
         break;
         case 7:
         if(caso_Evidenzia == _side_mago)
-            stampa_mago(_MagoAvv, ev_CartaMago);
+            print_mage(_MagoAvv, ev_CartaMago);
         break;
         case 8: case 9:
         if(caso_Evidenzia == _side_mano)
-            stampa_mano(arr_ManoAvv, _ManoCampoAvv, ev_CartaMago);
+            print_magehand(arr_ManoAvv, _ManoCampoAvv, ev_CartaMago);
         else if(caso_Evidenzia == _side_campo)
-            stampa_campo(arr_CampoAvv, _ManoCampoAvv, ev_CartaMago);
+            print_gamefield(arr_CampoAvv, _ManoCampoAvv, ev_CartaMago);
         break;
         case 10:
         if(caso_Evidenzia == _side_mago)
-            stampa_mago(_Mago2Avv, ev_CartaMago);
+            print_mage(_Mago2Avv, ev_CartaMago);
         break;
         case 11: case 12:
         if(caso_Evidenzia == _side_mano)
-            stampa_mano(arr_Mano2Avv, _ManoCampo2Avv, ev_CartaMago);
+            print_magehand(arr_Mano2Avv, _ManoCampo2Avv, ev_CartaMago);
         else if(caso_Evidenzia == _side_campo)
-            stampa_campo(arr_Campo2Avv, _ManoCampo2Avv, ev_CartaMago);
+            print_gamefield(arr_Campo2Avv, _ManoCampo2Avv, ev_CartaMago);
         break;
         default:
         printf("\nErrore: nessun valore corrisponde ad un nodo Struct da evidenziare!\n");
@@ -1146,8 +1141,8 @@ static void evidenzia_Memoria(int tipo_Arr, int caso_Evidenzia, int ev_CartaMago
 }
 // ------------
 // Funzione dedicata ad individuare se il Mazzo contiene ancora carte da giocare oppure no,
-// il controllo avviene ad ogni turno in azione_Gioco.
-static void presenza_Mazzo(int seleziona_Giocatore, int *passa_Vincitore){
+// il controllo avviene ad ogni turno in choiceof_play.
+static void thereis_deck(int seleziona_Giocatore, int *passa_Vincitore){
     int presta_nMazzo = 1; // inizializzazione di presta_nMazzo
     Mago *presta_Mago = NULL; // inizializzazione di *presta_Mago
 
@@ -1176,23 +1171,23 @@ static void presenza_Mazzo(int seleziona_Giocatore, int *passa_Vincitore){
     // gli array associati a questo giocatore.
     if(presta_nMazzo <= 0){
         int temp_Vita = 0; // inizializzazione di una variabile temporanea
-        scan_memoriaMago(seleziona_Giocatore); // aggiorna *ptrmago.
+        scan_mage(seleziona_Giocatore); // aggiorna *ptrmago.
         presta_Mago = ptrmago;
         temp_Vita = presta_Mago->mago_punti_vita;  // prende in prestito il valore della vita del Mago da deallocare prima di venire deallocato.
 
-        svuota_arrManoCampo(seleziona_Giocatore+1, _side_mano, -1); // svuota l'array mano del mago corrispondente
-        svuota_arrManoCampo(seleziona_Giocatore+1, _side_campo, -1); // svuota l'array campo del mago corrispondente
+        empty_magehand(seleziona_Giocatore+1, _side_mano, -1); // svuota l'array mano del mago corrispondente
+        empty_magehand(seleziona_Giocatore+1, _side_campo, -1); // svuota l'array campo del mago corrispondente
 
-        elimina_datiMemoria(NULL, NULL, seleziona_Giocatore+1, _side_mazzo); // dealloca tutta la lista Mazzo del mago corrispondente
-        svuota_arrMagoMazzo(seleziona_Giocatore+2); // svuota l'array mazzo del mago corrispondente
+        delete_memdata(NULL, NULL, seleziona_Giocatore+1, _side_mazzo); // dealloca tutta la lista Mazzo del mago corrispondente
+        empty_magedeck(seleziona_Giocatore+2); // svuota l'array mazzo del mago corrispondente
 
-        elimina_datiMemoria(&ptrmago, NULL, seleziona_Giocatore, _side_nodoMago); // dealloca il nodo alla lista Mago corrispondente al mago da eliminare.
-        svuota_arrMagoMazzo(seleziona_Giocatore); // svuota l'array di puntatori mago all'elemento che corrisponde al mago deallocato.
+        delete_memdata(&ptrmago, NULL, seleziona_Giocatore, _side_nodoMago); // dealloca il nodo alla lista Mago corrispondente al mago da eliminare.
+        empty_magedeck(seleziona_Giocatore); // svuota l'array di puntatori mago all'elemento che corrisponde al mago deallocato.
 
-        inc_decManoDeck(seleziona_Giocatore, 1, 1); // decrementa n_mago[0] oppure n_mago[1] di 1 (il terzo parametro determina incremento oppure decremento della variabile globale).
+        add_cardtohand(seleziona_Giocatore, 1, 1); // decrementa n_mago[0] oppure n_mago[1] di 1 (il terzo parametro determina incremento oppure decremento della variabile globale).
         
-        scan_memoriaMago(_none_memory); // resetta il puntatore *ptrmago a NULL
-        scan_memoriaMazzo(_none_memory, NULL, NULL, NULL, _none_side); // resetta il puntatore *ptrmazzo a NULL
+        scan_mage(_none_memory); // resetta il puntatore *ptrmago a NULL
+        scan_deck(_none_memory, NULL, NULL, NULL, _none_side); // resetta il puntatore *ptrmazzo a NULL
 
         // la condizione non guarda all'idea della modalita' 2 contro 2 come avviene con la definizione all'enumeratore mode,
         // controlla soltanto se nell'array di puntatori mago, gli elementi associati ad un "mago amico"
@@ -1260,7 +1255,7 @@ static void presenza_Mazzo(int seleziona_Giocatore, int *passa_Vincitore){
 // ------------
 // Funzione static void incentrata a prendere "in prestito" l'indirizzo esadecimale degli eventuali dei maghi, oppure degli
 // array del mazzo e della mano, dei maghi corrispondenti agli elementi di Memoria_Mago.
-static void prendi_arrIndirizzo(Mago **prendi_Mago, Mazzo **prendi_Carta, int passa_Giocatore, int passa_Lato, int passa_Pos){
+static void get_arraddress(Mago **prendi_Mago, Mazzo **prendi_Carta, int passa_Giocatore, int passa_Lato, int passa_Pos){
     int len_Arr = 0;
 
     if(passa_Lato == _side_mano)
@@ -1273,9 +1268,9 @@ static void prendi_arrIndirizzo(Mago **prendi_Mago, Mazzo **prendi_Carta, int pa
     switch(passa_Giocatore){
         case 1: case 4: case 7: case 10: // prendi l'indirizzo dei maghi associabili (ideologicamente) a questi interi.
         if(passa_Lato == _side_mago){
-            scan_memoriaMago(passa_Giocatore);
+            scan_mage(passa_Giocatore);
             *prendi_Mago = ptrmago;
-            scan_memoriaMago(_none_memory);
+            scan_mage(_none_memory);
         }
         break;
         case 2: case 3:
@@ -1327,12 +1322,12 @@ static void prendi_arrIndirizzo(Mago **prendi_Mago, Mazzo **prendi_Carta, int pa
     return; // termina la chiamata di funzione con nessun valore.
 }
 
-static void menu_Guida(void){
+static void guide_menu(void){
     char *selezione_guida = (char *)malloc(LEN);
     int mostra_input = 0, escape_guida = 0;
     
     do{
-        clear_BufferANSI(); // "pulisce" l'output della chiamata di funzione precedente.
+        clear_ansi(); // "pulisce" l'output della chiamata di funzione precedente.
         
         // stampa gli input disponibili.
         printf(CLR UND"\nMenu Guida di Tragic"CLR);
@@ -1340,11 +1335,11 @@ static void menu_Guida(void){
         printf("\nSeleziona una delle seguenti opzioni, oppure q per uscire:\n");
 
         fgets(selezione_guida, LEN, stdin); // inserisci l'input.
-        clear_arrBuffer(selezione_guida, &escape_guida, 1); // pulisce gli spazi dentro gli elementi della stringa selezione_guida.
+        clear_arrbuffer(selezione_guida, &escape_guida, 1); // pulisce gli spazi dentro gli elementi della stringa selezione_guida.
 
         if(*selezione_guida != 'q' && *selezione_guida != 'Q'){
-            clear_BufferANSI();
-            stampa_Guida(&mostra_input, atoi(selezione_guida));
+            clear_ansi();
+            print_guidemenu(&mostra_input, atoi(selezione_guida));
 
             // se mostra_input = 1 e' vera, chiede di immettere un input per
             // poter continuare a iterare questo ciclo do while.
@@ -1353,13 +1348,13 @@ static void menu_Guida(void){
                 getchar();
 
                 // assegna questa variabile intera il valore 0, finche' questa funzione non richiamera'
-                // la funzione stampa_Guida, non gli verra' assegnato il valore 1.
+                // la funzione print_guidemenu, non gli verra' assegnato il valore 1.
                 mostra_input = 0;
             }
         }
     }while(*selezione_guida != 'q' && *selezione_guida != 'Q');
     
-    clear_BufferANSI();
+    clear_ansi();
 
     free(selezione_guida); // dealloca l'input.
     selezione_guida = NULL; // assegna il valore NULL, per la prossima chiamata di questa funzione void.
@@ -1368,7 +1363,7 @@ static void menu_Guida(void){
 
 // Funzione static void che stampa delle informazioni in output per aiutare l'utente
 // ad ambientarsi nel gioco.
-static void stampa_Guida(int *passa_Stop, int passa_Guida){
+static void print_guidemenu(int *passa_Stop, int passa_Guida){
     switch(passa_Guida){
         case 1:
         // stampa la storia del gioco
@@ -1503,7 +1498,7 @@ static void stampa_Guida(int *passa_Stop, int passa_Guida){
 }
 
 // Funzione static void per la stampa della memoria in output mediante interfaccia grafica.
-static void menu_Memoria(void)
+static void mem_menu(void)
 {
     char *selezione_memoria = (char *)malloc(LEN); // puntatore di caratteri inizializzato con malloc.
     int set_escape = 0, imposta_lato = 0; // definizioni di variabili intere.
@@ -1512,7 +1507,7 @@ static void menu_Memoria(void)
 
     fun_print = _show_all_address_mem;
     do{
-        clear_BufferANSI(); // lascia spazio al menu che verra' stampato nelle prossime istruzioni.
+        clear_ansi(); // lascia spazio al menu che verra' stampato nelle prossime istruzioni.
         printf("\n");
         printf(CLR UND"Menu Dati Giocatori"CLR);
         printf(ITA"\nGiocatori:\n"CLR);
@@ -1545,7 +1540,7 @@ static void menu_Memoria(void)
 
         printf("\nSeleziona una delle seguenti liste da stampare, oppure q per uscire:\n");
         fgets(selezione_memoria, LEN, stdin); // chiede un input all'utente di stampare un numero tra 1 a 12.
-        clear_arrBuffer(selezione_memoria, &set_escape, 1); // pulisci gli spazi dopo la chiamata fgets
+        clear_arrbuffer(selezione_memoria, &set_escape, 1); // pulisci gli spazi dopo la chiamata fgets
 
         if (set_escape == 1 && (*selezione_memoria != 'q' && *selezione_memoria != 'Q')){
             // se selezione_memoria il suo valore implicitamente convertito in decimale corrisponde ai valori di questa
@@ -1555,11 +1550,11 @@ static void menu_Memoria(void)
                 imposta_lato = _side_mago;
             else
                 imposta_lato = _side_mano;
-            clear_BufferANSI();
-            stampa_Memoria(atoi(selezione_memoria), imposta_lato, 1);
+            clear_ansi();
+            print_mem(atoi(selezione_memoria), imposta_lato, 1);
         }
     } while (*selezione_memoria != 'q' && *selezione_memoria != 'Q');
-    clear_BufferANSI();
+    clear_ansi();
 
     free(selezione_memoria); // dealloca l'input.
     selezione_memoria = NULL; // assegna il valore NULL, per la prossima chiamata di questa funzione void.
@@ -1569,7 +1564,7 @@ static void menu_Memoria(void)
 // Mostra gli input disponibili e le azioni da compiere con una carta scelta (e' possibile stampare
 // individualmente gli indirizzi dei maghi/carte presenti nel determinato turno, precisamente il titolo
 // identificativo del mago che sta giocando contro il mago avversario).
-static void input_Gioco(char *passa_Gioco, int *presta_selTar[2], int *caso_Menu, int *reset_Pos, int *tipo_selScelta){
+static void game_input(char *passa_Gioco, int *presta_selTar[2], int *caso_Menu, int *reset_Pos, int *tipo_selScelta){
     // Stampa la prima sezione del menu, si puo' chiedere di far vedere le scelte sul campo di battaglia, e quindi
     // proseguire alla sezione successiva (*caso_Menu = 2), oppure far fare al mago delle determinate
     // azioni.
@@ -1586,7 +1581,7 @@ static void input_Gioco(char *passa_Gioco, int *presta_selTar[2], int *caso_Menu
         printf("\n\n\t\t\tq - Esci dalla partita\n"); // si puo' uscire dalla partita in qualsiasi momento del gioco.
 
         fgets(passa_Gioco, LEN, stdin);
-        clear_arrBuffer(passa_Gioco, NULL, 1);
+        clear_arrbuffer(passa_Gioco, NULL, 1);
         
         if(*passa_Gioco != 'q' && *passa_Gioco != 'Q'){
             switch(atoi(passa_Gioco)){
@@ -1637,10 +1632,10 @@ static void input_Gioco(char *passa_Gioco, int *presta_selTar[2], int *caso_Menu
             do{
                 // ciclo do while che stampa una richiesta di input di uscire dalla partita, finche' l'utente non mette un input
                 // valido il ciclo non sara' vero, quindi reitera e ristampa la richiesta.
-                clear_BufferANSI();
+                clear_ansi();
                 printf("\nVuoi uscire dal gioco? (la partita verra' salvata)\n\nPremi y per confermare, n per declinare.\n");
                 fgets(passa_Gioco, LEN, stdin);
-                clear_arrBuffer(passa_Gioco, NULL, 1);
+                clear_arrbuffer(passa_Gioco, NULL, 1);
                 
                 if(*passa_Gioco == 'y' || *passa_Gioco == 'Y'){
                     // se la condizione e' vera, assegna a NULL, se non sono equivalenti a NULL
@@ -1655,9 +1650,9 @@ static void input_Gioco(char *passa_Gioco, int *presta_selTar[2], int *caso_Menu
                     *reset_Pos = 0;
                     *passa_Gioco = 'q';
                     // se questa definizione diventa uguale a _pause_game, membro di enum Evento_Gioco, non chiamera'
-                    // la funzione stampa_outputGioco, mostrando gli eventuali output che non hanno senso stampare
+                    // la funzione print_gameout, mostrando gli eventuali output che non hanno senso stampare
                     // per il momento (non incide sulla stampa delle liste dinamicamente create solo sulla chiamata di 
-                    // stampa_outputGioco).
+                    // print_gameout).
                     event = _pause_game;
                     break; // interruzione diretta di questo ciclo dato che *passa_Gioco non sara' mai uguale a 'n' oppure 'N' se si vuole uscire dal gioco in questo caso.
                 }
@@ -1679,7 +1674,7 @@ static void input_Gioco(char *passa_Gioco, int *presta_selTar[2], int *caso_Menu
             *reset_Pos = 0; // resetta per sicurezza come per prevenire un ciclo infinito nella funzione combatti.
 
             fgets(passa_Gioco, LEN, stdin);
-            clear_arrBuffer(passa_Gioco, NULL, 1);
+            clear_arrbuffer(passa_Gioco, NULL, 1);
 
             if(*passa_Gioco != 'q' && *passa_Gioco != 'Q')
                 *presta_selTar[0] = atoi(passa_Gioco);
@@ -1691,13 +1686,13 @@ static void input_Gioco(char *passa_Gioco, int *presta_selTar[2], int *caso_Menu
             }
         }
         else if(*reset_Pos >= 1){
-            // chiamata di funzione trova_layerMemoria, che eventualmente assegnera' in un valore intero in base al valore di implicitamente passato per intero di passa_Gioco,
+            // chiamata di funzione check_gamefieldlayer, che eventualmente assegnera' in un valore intero in base al valore di implicitamente passato per intero di passa_Gioco,
             // quello che il giocatore ha chiesto di selezionare, che sia un mago oppure una carta.
-            trova_layerMemoria(&sel_giocatore, &sel_lato, atoi(passa_Gioco));
+            check_gamefieldlayer(&select_player, &select_handdeck, atoi(passa_Gioco));
             
             // qualunque cosa il giocatore ha chiesto di selezionare, i puntatore sel_Carta, oppure sel_Mago (dipende da quello che il giocatore ha scelto),
             // gli verra' assegnato a uno solo dei due un indirizzo di memoria
-            prendi_arrIndirizzo(&ptr_selMago, &ptr_selCarta, sel_giocatore, sel_lato, *presta_selTar[0]);
+            get_arraddress(&ptr_selMago, &ptr_selCarta, select_player, select_handdeck, *presta_selTar[0]);
             
             *caso_Menu = *caso_Menu + 1; // incrementa questa variabile, reitera il ciclo, richiama questa funzione da combatti, passa alla sezione successiva.
 
@@ -1713,22 +1708,22 @@ static void input_Gioco(char *passa_Gioco, int *presta_selTar[2], int *caso_Menu
         printf("\nSeleziona un opzione:\n");
         
         if(ptr_selMago != NULL){
-            if(sel_lato == _side_mago){
+            if(select_handdeck == _side_mago){
                printf("1) Stampa indirizzo");
                *tipo_selScelta = 1;
             }
         }
-        else if(ptr_selCarta != NULL && sel_giocatore != avversario+1){
+        else if(ptr_selCarta != NULL && select_player != avversario+1){
             // se questa condizione e' vera allora e' stata scelta sul campo di battaglia
             // una carta creatura.
-            if(ptr_selCarta->tipo_carta == 0 && sel_lato == _side_mano){
+            if(ptr_selCarta->tipo_carta == 0 && select_handdeck == _side_mano){
                 // se questa condizione e' vera allora la creatura scelta e' nella mano
                 // del giocatore.
                 printf("1) Evoca\n");
                 printf("2) Mostra indirizzo");
                 *tipo_selScelta = 2;
             }
-            else if(ptr_selCarta->tipo_carta == 0 && sel_lato == _side_campo){
+            else if(ptr_selCarta->tipo_carta == 0 && select_handdeck == _side_campo){
                 // se questa condizione e' vera allora la creatura scelta e' nel campo 
                 // di battaglia.
                 if(action[2] == _none_event){
@@ -1770,7 +1765,7 @@ static void input_Gioco(char *passa_Gioco, int *presta_selTar[2], int *caso_Menu
                 *tipo_selScelta = 6;
             }
         }
-        else if(ptr_selCarta != NULL && sel_giocatore == avversario+1 && (sel_lato == _side_mano || sel_lato == _side_campo)){
+        else if(ptr_selCarta != NULL && select_player == avversario+1 && (select_handdeck == _side_mano || select_handdeck == _side_campo)){
             // e' stata scelta una carta sul campo di battaglia, ma non e' possibile eseguire alcuna
             // azione.
             printf("1) Stampa indirizzo");
@@ -1799,10 +1794,10 @@ static void input_Gioco(char *passa_Gioco, int *presta_selTar[2], int *caso_Menu
         printf("\n\n\t\t\tq - Torna indietro\n");
 
         fgets(passa_Gioco, LEN, stdin); // richiedi l'input al giocatore.
-        clear_arrBuffer(passa_Gioco, NULL, 1);
+        clear_arrbuffer(passa_Gioco, NULL, 1);
 
         if(*passa_Gioco != 'q' && *passa_Gioco != 'Q')
-            input_selTarget(*&caso_Menu, atoi(passa_Gioco), *tipo_selScelta);
+            targetinput_sel(*&caso_Menu, atoi(passa_Gioco), *tipo_selScelta);
         else{
             // allora se il giocatore vuole tornare indietro, resetta per sicurezza
             // variabili importanti locali oppure passate per indirizzo.
@@ -1821,8 +1816,8 @@ static void input_Gioco(char *passa_Gioco, int *presta_selTar[2], int *caso_Menu
             *presta_selTar[0] = -1;
             *reset_Pos = 0;
 
-            sel_giocatore = _none_memory;
-            sel_lato = _none_memory;
+            select_player = _none_memory;
+            select_handdeck = _none_memory;
             fun_print = _none_print_choice;
             sel_print = _none_print_choice;
 
@@ -1857,7 +1852,7 @@ static void input_Gioco(char *passa_Gioco, int *presta_selTar[2], int *caso_Menu
             printf("\n\n\t\t\tq - Torna indietro\n");
 
             fgets(passa_Gioco, LEN, stdin);
-            clear_arrBuffer(passa_Gioco, NULL, 1);
+            clear_arrbuffer(passa_Gioco, NULL, 1);
             
             if(*passa_Gioco != 'q' && *passa_Gioco != 'Q')
                 *presta_selTar[1] = atoi(passa_Gioco); // assegnazione di un valore intero convertito implicitamente.
@@ -1892,8 +1887,8 @@ static void input_Gioco(char *passa_Gioco, int *presta_selTar[2], int *caso_Menu
                     *passa_Gioco = ' ';
                     *reset_Pos = 0;
                     *presta_selTar[0] = -1;
-                    sel_giocatore = _none_memory;
-                    sel_lato = _none_memory;
+                    select_player = _none_memory;
+                    select_handdeck = _none_memory;
                     fun_print = _none_print_choice;
                     sel_print = _none_print_choice;
 
@@ -1903,15 +1898,15 @@ static void input_Gioco(char *passa_Gioco, int *presta_selTar[2], int *caso_Menu
         }
         else if(*reset_Pos >= 2){
             // Stesse chiamate che avvengono in condizione vera di *caso_Menu = 2.
-            trova_layerMemoria(&tar_giocatore, &tar_lato, atoi(passa_Gioco));
+            check_gamefieldlayer(&target_player, &target_handdeck, atoi(passa_Gioco));
             
             // estrae l'indirizzo con i valori convertiti ha disposizione passandolo tra
             // questi parametri.
-            prendi_arrIndirizzo(&ptr_tarMago, &ptr_tarCarta, tar_giocatore, tar_lato, *presta_selTar[1]);
+            get_arraddress(&ptr_tarMago, &ptr_tarCarta, target_player, target_handdeck, *presta_selTar[1]);
 
             // le assegnazioni fatte in condizione vera di *caso_Menu = 3, hanno determinato
             // il valore passato per indirizzo di *tipo_selScelta.
-            input_selTarget(*&caso_Menu, 1, *tipo_selScelta);
+            targetinput_sel(*&caso_Menu, 1, *tipo_selScelta);
         }
     }
     else if(*caso_Menu == 5){
@@ -1931,10 +1926,10 @@ static void input_Gioco(char *passa_Gioco, int *presta_selTar[2], int *caso_Menu
         *reset_Pos = 0;
         *presta_selTar[0] = -1;
         *presta_selTar[1] = -1;
-        sel_giocatore = _none_memory;
-        tar_giocatore = _none_memory;
-        sel_lato = _none_memory;
-        tar_lato = _none_memory;
+        select_player = _none_memory;
+        target_player = _none_memory;
+        select_handdeck = _none_memory;
+        target_handdeck = _none_memory;
         fun_print = _none_print_choice;
         sel_print = _none_print_choice;
         event = _none_event;
@@ -1948,7 +1943,7 @@ static void input_Gioco(char *passa_Gioco, int *presta_selTar[2], int *caso_Menu
 }
 // Funzione static void dedicata alla gestione di due definizioni globali
 // al tipo enumeratore Evento_Gioco.
-static void azione_Gioco(int *passa_selTar[2], int *passa_Vincitore){
+static void choiceof_play(int *passa_selTar[2], int *passa_Vincitore){
     if(event != _change_turn && event != _skip_turn && event != _print_ending){
         if(event == _straight_attack || event == _play_throwaway_card || event == _evoke_creature){
             // chiama la funzione gioca_carta.
@@ -1958,18 +1953,18 @@ static void azione_Gioco(int *passa_selTar[2], int *passa_Vincitore){
         }
         if(event == _draw){
             // chiamata di funzione che fa pescare una carta.
-            memoria_Pesca(giocatore, &*passa_Vincitore);
+            draw_card(giocatore, &*passa_Vincitore);
             action[0] = _completed_action; // azione associata al pescare una carta completata.
         }
         if(event == _dead_mage){
             printf(ITA "\nIl mago avversario e' stato sconfitto!\n"CLR);
-            set_delayClock(1, 4);
+            set_delayclock(1, 4);
             event = _change_turn; // cambia il turno, perche' la lista e' deallocata, e gli elementi in array mano/campo sono tutti NULL.
         }
 
         if(event == _dead_by_hand){
             printf(ITA "\nIl mago non ha piu' carte nel mazzo, il mago e' eliminato!\n"CLR);
-            set_delayClock(1, 4);
+            set_delayclock(1, 4);
             event = _change_turn; // alloca cambia il turno, perche' questo giocatore non puo' piu' giocare dato che la sua lista e' stata deallocata.
         }
 
@@ -2000,13 +1995,13 @@ static void azione_Gioco(int *passa_selTar[2], int *passa_Vincitore){
         // viene trovato il vincitore allora questa condizione e' falsa.
         if(*passa_Vincitore <= 0){
             printf(ITA "\nIl turno e' concluso...\n"CLR); // non stampa che il turno e' concluso se non ci sono altri maghi con cui combattere.
-            set_delayClock(1, 3); // delay di 3 secondi in output, per permettere di leggere all'utente che il turno e' cambiato.
+            set_delayclock(1, 3); // delay di 3 secondi in output, per permettere di leggere all'utente che il turno e' cambiato.
         }
     }
     
     if(*passa_Vincitore > 0){
         event = _print_ending;
-        set_delayClock(1, 4); // delay di 4 secondi in output, per far intuire all'utente che la partita sta per terminare e sta per caricare l'esito finale in output.
+        set_delayclock(1, 4); // delay di 4 secondi in output, per far intuire all'utente che la partita sta per terminare e sta per caricare l'esito finale in output.
     }
     if(*passa_Vincitore <= 0)
         event = _none_event; // ulteriore controllo, per resettare qualsiasi evento associato a questa definizione.
@@ -2016,13 +2011,13 @@ static void azione_Gioco(int *passa_selTar[2], int *passa_Vincitore){
 // Funzione static void fondamentale perche' questa funzione e' il nucleo in cui
 // viene calcolato e stampato l'output della cosiddetta numerazione in stile "battaglia navale",
 // la quale mostra dei numeri che suggeriscono cosa e' possibile fare o meno sul campo di battaglia.
-static void input_selTarget(int *gioco_Menu, int passa_inputGioco, int caso_selTar){
+static void targetinput_sel(int *gioco_Menu, int passa_inputGioco, int caso_selTar){
     if(*gioco_Menu == 3){
         if(passa_inputGioco == 1){
             if(caso_selTar == 1){
                 fun_print = _show_single_address_mem; // mostra l'indirizzo di cio' che e' stato scelto dal giocatore.
                 
-                // passa al menu di input successivo in input_Gioco, perche' e' l'input e' valido, la richiesta di input
+                // passa al menu di input successivo in game_input, perche' e' l'input e' valido, la richiesta di input
                 // dell'utente e' stata completata.
                 *gioco_Menu = *gioco_Menu + 1;
             }
@@ -2115,19 +2110,19 @@ static void input_selTarget(int *gioco_Menu, int passa_inputGioco, int caso_selT
     return;
 }
 // ------------
-static void stampa_mago(int memoria_Mago, int evidenzia_Mago)
+static void print_mage(int memoria_Mago, int evidenzia_Mago)
 {
     char *temp_nome = "";
     int temp_deck = 0; // prende in "prestito" il valore del numero di carte presenti nel mazzo di ogni mago.
 
     // mostra in output di che tipo di mago si stratta (se e' avversario oppure un giocatore principale)
     if(mem_title == _title_visible || mem_title == _title_only_mage_deck_visible)
-        stampa_titoloMemoria(memoria_Mago, _none_side, 1);
-    scan_memoriaMago(memoria_Mago);
-    scan_memoriaMazzo(memoria_Mago, NULL, NULL, &temp_deck, _side_mazzo);
+        print_playername(memoria_Mago, _none_side, 1);
+    scan_mage(memoria_Mago);
+    scan_deck(memoria_Mago, NULL, NULL, &temp_deck, _side_mazzo);
 
     if (ptrmago != NULL){
-        stampa_tipoMazzo(&temp_nome, ptrmago->classe_mago, 1);
+        print_playerdeck(&temp_nome, ptrmago->classe_mago, 1);
 
         if(evidenzia_Mago == 0){
             printf(CYN ITA "%s\n"CLR, ptrmago->nome);
@@ -2146,11 +2141,11 @@ static void stampa_mago(int memoria_Mago, int evidenzia_Mago)
     else
         printf(DRK_GRY"Mago vuoto"CLR);
     if(fun_print == _show_all_address_mem)
-        stampa_Indirizzo(NULL, NULL, ptrmago, _side_mago, -1);
+        print_addr(NULL, NULL, ptrmago, _side_mago, -1);
     return;
 }
 
-static void stampa_mazzo(int memoria_Mazzo, int len_Mazzo, int *passa_Blocco)
+static void print_deck(int memoria_Mazzo, int len_Mazzo, int *passa_Blocco)
 {
     // puntatore array temporaneo che ha il numero di elementi lo stesso valore del numero delle
     // carte del mazzo del mago associato ad esso.
@@ -2165,8 +2160,8 @@ static void stampa_mazzo(int memoria_Mazzo, int len_Mazzo, int *passa_Blocco)
         if (i == avanti_lista - 5 || i < 0)
         {
             if(mem_title == _title_visible)
-                stampa_titoloMemoria(memoria_Mazzo, _none_side, 1);
-            scan_memoriaMazzo(memoria_Mazzo, passa_mazzo, NULL, NULL, _side_mazzo);
+                print_playername(memoria_Mazzo, _none_side, 1);
+            scan_deck(memoria_Mazzo, passa_mazzo, NULL, NULL, _side_mazzo);
         }
 
         // se il mazzo passato per parametri e' uguale a 0, sappiamo che la lista e'
@@ -2192,9 +2187,9 @@ static void stampa_mazzo(int memoria_Mazzo, int len_Mazzo, int *passa_Blocco)
         {
             // stampa le informazioni del mazzo in output.
             printf(GRN "\nCarta n.%d" CLR, i + 1);
-            stampa_Indirizzo(NULL, passa_mazzo[i], NULL, _none_side, -1);
+            print_addr(NULL, passa_mazzo[i], NULL, _none_side, -1);
             printf(HRED "\tPV: %d\n", passa_mazzo[i]->carta_punti_vita);
-            stampa_tipoMazzo(&temp_tipomz, passa_mazzo[i]->tipo_carta, 2);
+            print_playerdeck(&temp_tipomz, passa_mazzo[i]->tipo_carta, 2);
             printf(YEL "Tipo: %s\n\n" CLR, temp_tipomz);
         }
         else
@@ -2217,8 +2212,8 @@ static void stampa_mazzo(int memoria_Mazzo, int len_Mazzo, int *passa_Blocco)
             printf("\npremi q per uscire dal Menu.\n\n");
 
             fgets(loop_mazzo, LEN, stdin);
-            clear_arrBuffer(loop_mazzo, &input_check, 2);
-            clear_BufferANSI();
+            clear_arrbuffer(loop_mazzo, &input_check, 2);
+            clear_ansi();
 
             if (*loop_mazzo == 'd' && avanti_lista < len_Mazzo && input_check == 1)
             {
@@ -2246,27 +2241,27 @@ static void stampa_mazzo(int memoria_Mazzo, int len_Mazzo, int *passa_Blocco)
     return;
 }
 
-static void selezione_sortArrMano(int passa_Mano, int scegli_Caso)
+static void sel_handsorted(int passa_Mano, int scegli_Caso)
 {
     switch(passa_Mano){
         case 1: case 2: case 3:
-        sort_arrayMano(arr_Mano1, scegli_Caso);
+        arr_handsort(arr_Mano1, scegli_Caso);
         break;
         case 4: case 5: case 6:
-        sort_arrayMano(arr_Mano2, scegli_Caso);
+        arr_handsort(arr_Mano2, scegli_Caso);
         break;
         case 7: case 8: case 9:
-        sort_arrayMano(arr_ManoAvv, scegli_Caso);
+        arr_handsort(arr_ManoAvv, scegli_Caso);
         break;
         case 10: case 11: case 12:
-        sort_arrayMano(arr_Mano2Avv, scegli_Caso);
+        arr_handsort(arr_Mano2Avv, scegli_Caso);
         break;
         default:
         printf("\nErrore: nessun valore corrisponde ad un array Mano!\n");
     }
 }
 
-static void sort_arrayMano(Mano *ListaMano[], int caso_Mano)
+static void arr_handsort(Mano *ListaMano[], int caso_Mano)
 {
     for (int i = 0; i < 6; i++)
     {
@@ -2288,45 +2283,45 @@ static void sort_arrayMano(Mano *ListaMano[], int caso_Mano)
     return;
 }
 
-static void stampa_indirizzoMemoria(int add_Giocatore, int tipo_Add, int pos_Add){
+static void print_memaddr(int add_Giocatore, int tipo_Add, int pos_Add){
     switch(add_Giocatore){
         case 1: case 4: case 7: case 10:
         if(tipo_Add == _side_mago){
-            scan_memoriaMago(add_Giocatore);
-            stampa_Indirizzo(NULL, NULL, ptrmago, tipo_Add, pos_Add);
-            scan_memoriaMago(_none_memory);
+            scan_mage(add_Giocatore);
+            print_addr(NULL, NULL, ptrmago, tipo_Add, pos_Add);
+            scan_mage(_none_memory);
         }
         break;
         case 2: case 3:
         if(tipo_Add == _side_mano)
-            stampa_Indirizzo(arr_Mano1, ptrmazzo, NULL, tipo_Add, pos_Add);
+            print_addr(arr_Mano1, ptrmazzo, NULL, tipo_Add, pos_Add);
         else if(tipo_Add == _side_campo)
-            stampa_Indirizzo(arr_Campo1, ptrmazzo, NULL, tipo_Add, pos_Add);
+            print_addr(arr_Campo1, ptrmazzo, NULL, tipo_Add, pos_Add);
         break;
         case 5: case 6:
         if(tipo_Add == _side_mano)
-            stampa_Indirizzo(arr_Mano2, ptrmazzo, NULL, tipo_Add, pos_Add);
+            print_addr(arr_Mano2, ptrmazzo, NULL, tipo_Add, pos_Add);
         else if(tipo_Add == _side_campo)
-            stampa_Indirizzo(arr_Campo2, ptrmazzo, NULL, tipo_Add, pos_Add);
+            print_addr(arr_Campo2, ptrmazzo, NULL, tipo_Add, pos_Add);
         break;
         case 8: case 9:
         if(tipo_Add == _side_mano)
-            stampa_Indirizzo(arr_ManoAvv, ptrmazzo, NULL, tipo_Add, pos_Add);
+            print_addr(arr_ManoAvv, ptrmazzo, NULL, tipo_Add, pos_Add);
         else if(tipo_Add == _side_campo)
-            stampa_Indirizzo(arr_CampoAvv, ptrmazzo, NULL, tipo_Add, pos_Add);
+            print_addr(arr_CampoAvv, ptrmazzo, NULL, tipo_Add, pos_Add);
         break;
         case 11: case 12:
         if(tipo_Add == _side_mano)
-            stampa_Indirizzo(arr_Mano2Avv, ptrmazzo, NULL, tipo_Add, pos_Add);
+            print_addr(arr_Mano2Avv, ptrmazzo, NULL, tipo_Add, pos_Add);
         else if(tipo_Add == _side_campo)
-            stampa_Indirizzo(arr_Campo2Avv, ptrmazzo, NULL, tipo_Add, pos_Add);
+            print_addr(arr_Campo2Avv, ptrmazzo, NULL, tipo_Add, pos_Add);
         break;
         default:
         printf("\nErrore: nessun valore corrisponde ad un indirizzo da stampare!\n");
     }
 }
 
-static void stampa_Indirizzo(Mazzo *add_ManoCampo[], Mazzo *add_Mazzo, Mago *add_Mago, int tipo_Arr, int sel_Arr){
+static void print_addr(Mazzo *add_ManoCampo[], Mazzo *add_Mazzo, Mago *add_Mago, int tipo_Arr, int sel_Arr){
     int len_Arr = -1;
 
     if(tipo_Arr == _side_mano)
@@ -2372,13 +2367,13 @@ static void stampa_Indirizzo(Mazzo *add_ManoCampo[], Mazzo *add_Mazzo, Mago *add
     return;
 }
 
-static void stampa_outputGioco(int passa_Vincitore){
-    clear_BufferANSI();
+static void print_gameout(int passa_Vincitore){
+    clear_ansi();
     if(event == _print_beginning){
-        scan_memoriaMago(_Mago);
+        scan_mage(_Mago);
         printf(BOL CYN ITA "\t   %s\n" CLR, ptrmago->nome);
         if(mode != _1versus1 && mago[2] != NULL){
-            scan_memoriaMago(_Mago2);
+            scan_mage(_Mago2);
             printf(BOL CYN ITA "\n\t%s\n" CLR, ptrmago->nome);
         }
         printf(YEL"                                                    \n");
@@ -2395,18 +2390,18 @@ static void stampa_outputGioco(int passa_Vincitore){
         printf("\t                          @@                      \n");
         printf("\t                                                  \n"CLR);
         printf(ITA"\t                      Contro...                   \n"CLR);
-        scan_memoriaMago(_MagoAvv);
+        scan_mage(_MagoAvv);
         printf("\t\t\t\t\t\t");
         if(mode != _1versus1)
             printf("   ");
         printf(BOL CYN ITA "%s\n" CLR, ptrmago->nome);
         if(mode != _1versus1 && mago[3] != NULL){
-            scan_memoriaMago(_Mago2Avv);
+            scan_mage(_Mago2Avv);
             printf(BOL CYN ITA "\n\t\t\t\t\t\t%s\n" CLR, ptrmago->nome);
         }
-        scan_memoriaMago(_none_memory);
+        scan_mage(_none_memory);
         printf(CLR ITA "");
-        set_delayClock(1, 4);
+        set_delayclock(1, 4);
     }
     else if(event == _print_ending){
         if(passa_Vincitore == 1){
@@ -2444,19 +2439,19 @@ static void stampa_outputGioco(int passa_Vincitore){
                 printf(ITA"\nL'ultimo giocatore rimasto nella tua squadra ha la stessa vita della squadra opposta... la partita rimane in pareggio!\n"CLR);
         }
         
-        set_delayClock(1, 5);
+        set_delayclock(1, 5);
         
-        clear_BufferANSI();
-        del_totaleDatiMemoria();
+        clear_ansi();
+        delete_allmem();
         printf(BOL"\nLa memoria allocata dinamicamente e' stata deallocata con successo.\n"CLR);
         printf("\n\nPremi un tasto qualsiasi per continuare...\n");
         getchar();
     }
-    scan_memoriaMago(_none_memory); // assegna *ptrmazzo a NULL.
+    scan_mage(_none_memory); // assegna *ptrmazzo a NULL.
     return;
 }
 
-static void stampa_titoloMemoria(int passa_Titolo, int sel_ManoMazzo, int stile_titolo){
+static void print_playername(int passa_Titolo, int sel_ManoMazzo, int stile_titolo){
     if(stile_titolo != 0)
         printf(ONG ITA "");
     switch (passa_Titolo){
@@ -2512,12 +2507,12 @@ static void stampa_titoloMemoria(int passa_Titolo, int sel_ManoMazzo, int stile_
         printf("\nErrore: nessun output Mazzo da stampare!");
     }
     if(stile_titolo != 0)
-        printf("\n"); // vai a capo, se viene stampato come "blocco", ovvero se viene chiamata questa funzione dalla funzione combatti, e non dalla funzione menu_Memoria.
+        printf("\n"); // vai a capo, se viene stampato come "blocco", ovvero se viene chiamata questa funzione dalla funzione combatti, e non dalla funzione mem_menu.
     return;
 }
 
 // Funzione static void che mostra la classe di un determinato Mago allocato in memoria.
-static void stampa_tipoMazzo(char **tipo_Classe, int passa_Stampa, int scegli_Output)
+static void print_playerdeck(char **tipo_Classe, int passa_Stampa, int scegli_Output)
 {
     if (scegli_Output == 1)
     { // mago
@@ -2565,7 +2560,7 @@ static void stampa_tipoMazzo(char **tipo_Classe, int passa_Stampa, int scegli_Ou
 // Funzione static void che individua in quale punto e' stata richiesta l'assegnazione di un indirizzo
 // di memoria associato alla selezione in input del giocatore, ai puntatori globali ptr_selMago/ptr_selCarta,
 // oppure ptr_tarMago/ptr_tarCarta.
-static void trova_layerMemoria(int *passa_tipoGiocatore, int *passa_Lato, int input_SelTar){
+static void check_gamefieldlayer(int *passa_tipoGiocatore, int *passa_Lato, int input_SelTar){
     if(input_SelTar == 22){
         // il giocatore ha inserito l'input dal valore 22, e' il mago avversario.
         *passa_tipoGiocatore = avversario; 
@@ -2599,49 +2594,49 @@ static void trova_layerMemoria(int *passa_tipoGiocatore, int *passa_Lato, int in
 // Funzione static void che mostra i cosiddetti numeri in stile "battaglia navale", ogni strato,
 // ovvero layer dei cosiddetti output del campo di battaglia, mostrera' dei numeri da 1 a 22,
 // intuitivamente associabili al mago/carta da selezionare.
-static void passa_outputSelTar(int passa_Giocatore, int *passa_selTar[2], int *passa_Check, int passa_Layer, int passa_Tipo){
+static void sel_targetoutput(int passa_Giocatore, int *passa_selTar[2], int *passa_Check, int passa_Layer, int passa_Tipo){
     switch(passa_Giocatore){
         case 1: case 4: case 7: case 10:
         // passa_Tipo e fun_print devono essere assegnate a membri i quali soddisfano alcune di queste numerose condizioni per poter
         // far vedere gli input al giocatore, serve proprio per evitare che il giocatore riceva in output un qualcosa che non voleva vedere.
         if(passa_Tipo == _side_mago && (fun_print == _show_all_selections || fun_print == _show_dmg_selections || fun_print == _show_only_creatures_dmg 
         || fun_print == _show_heal_selections || fun_print == _show_creature_summonings))
-            sel_stampaDisponibili(NULL, passa_selTar, &*passa_Check, passa_Layer, passa_Tipo); // passa l'input e il layer per parametri in questa funzione.
+            validate_gamefield(NULL, passa_selTar, &*passa_Check, passa_Layer, passa_Tipo); // passa l'input e il layer per parametri in questa funzione.
         break;
         case 2: case 3:
         if(fun_print == _show_all_selections || fun_print == _show_dmg_selections || fun_print == _show_only_creatures_dmg 
         || fun_print == _show_heal_selections || fun_print == _show_creature_summonings){
             if(passa_Tipo == _side_mano)
-                sel_stampaDisponibili(arr_Mano1, passa_selTar, &*passa_Check, passa_Layer, passa_Tipo); // passa l'input e il layer per parametri in questa funzione.
+                validate_gamefield(arr_Mano1, passa_selTar, &*passa_Check, passa_Layer, passa_Tipo); // passa l'input e il layer per parametri in questa funzione.
             else if(passa_Tipo == _side_campo)
-                sel_stampaDisponibili(arr_Campo1, passa_selTar, &*passa_Check, passa_Layer, passa_Tipo);
+                validate_gamefield(arr_Campo1, passa_selTar, &*passa_Check, passa_Layer, passa_Tipo);
         }
         break;
         case 5: case 6:
         if(fun_print == _show_all_selections || fun_print == _show_dmg_selections || fun_print == _show_only_creatures_dmg 
         || fun_print == _show_heal_selections || fun_print == _show_creature_summonings){
             if(passa_Tipo == _side_mano)
-                sel_stampaDisponibili(arr_Mano2, passa_selTar, &*passa_Check, passa_Layer, passa_Tipo);
+                validate_gamefield(arr_Mano2, passa_selTar, &*passa_Check, passa_Layer, passa_Tipo);
             else if(passa_Tipo == _side_campo)
-                sel_stampaDisponibili(arr_Campo2, passa_selTar, &*passa_Check, passa_Layer, passa_Tipo);
+                validate_gamefield(arr_Campo2, passa_selTar, &*passa_Check, passa_Layer, passa_Tipo);
         }
         break;
         case 8: case 9:
         if(fun_print == _show_all_selections || fun_print == _show_dmg_selections || fun_print == _show_only_creatures_dmg 
         || fun_print == _show_heal_selections || fun_print == _show_creature_summonings){
             if(passa_Tipo == _side_mano)
-                sel_stampaDisponibili(arr_ManoAvv, passa_selTar, &*passa_Check, passa_Layer, passa_Tipo);
+                validate_gamefield(arr_ManoAvv, passa_selTar, &*passa_Check, passa_Layer, passa_Tipo);
             else if(passa_Tipo == _side_campo)
-                sel_stampaDisponibili(arr_CampoAvv, passa_selTar, &*passa_Check, passa_Layer, passa_Tipo);
+                validate_gamefield(arr_CampoAvv, passa_selTar, &*passa_Check, passa_Layer, passa_Tipo);
         }
         break;
         case 11: case 12:
         if(fun_print == _show_all_selections || fun_print == _show_dmg_selections || fun_print == _show_only_creatures_dmg 
         || fun_print == _show_heal_selections || fun_print == _show_creature_summonings){
             if(passa_Tipo == _side_mano)
-                sel_stampaDisponibili(arr_Mano2Avv, passa_selTar, &*passa_Check, passa_Layer, passa_Tipo);
+                validate_gamefield(arr_Mano2Avv, passa_selTar, &*passa_Check, passa_Layer, passa_Tipo);
             else if(passa_Tipo == _side_campo)
-                sel_stampaDisponibili(arr_Campo2Avv, passa_selTar, &*passa_Check, passa_Layer, passa_Tipo);
+                validate_gamefield(arr_Campo2Avv, passa_selTar, &*passa_Check, passa_Layer, passa_Tipo);
         }
         break;
         default:
@@ -2653,7 +2648,7 @@ static void passa_outputSelTar(int passa_Giocatore, int *passa_selTar[2], int *p
 // Funzione static void fondamentale (e' stata anticipata piu' volte tra i commenti di questo file sorgente), senza le istruzioni
 // di questa funzione void, non sarebbe possibile per il giocatore eseguire alcun tipo di azione sul campo di battaglia.
 // Si occupa di far vedere in output cosa puo' e non puo' selezionare il giocatore sul campo di battaglia.
-static void sel_stampaDisponibili(Mazzo *passa_Arr[], int *prendi_selTar[2], int *check_Layer, int sel_Layer, int tipo_Layer){
+static void validate_gamefield(Mazzo *passa_Arr[], int *prendi_selTar[2], int *check_Layer, int sel_Layer, int tipo_Layer){
     int len_inizio = 0, len_arr = 0, input_disponibile = -1;
 
     if(tipo_Layer == _side_mano && tipo_Layer != _side_mago)
@@ -2815,43 +2810,43 @@ static void sel_stampaDisponibili(Mazzo *passa_Arr[], int *prendi_selTar[2], int
 // Funzione static void che viene chiamata in combatti, fa cambiare l'output dei blocchi
 // in cui sono rappresentati in output sia i maghi che gli array mano/campo, fa cambiare
 // il loro modo di vederli.
-static void stampa_sceltaMemoria(int Layer, int passa_posSel, int passa_Target){
+static void print_fieldtable(int Layer, int passa_posSel, int passa_Target){
     switch(Layer){
         case 1:
-        if(sel_print == _highlight_mem && sel_giocatore == avversario && sel_lato == _side_mago)
-            evidenzia_Memoria(sel_giocatore, sel_lato, passa_posSel);
+        if(sel_print == _highlight_mem && select_player == avversario && select_handdeck == _side_mago)
+            highlight_mem(select_player, select_handdeck, passa_posSel);
         else
-            stampa_Memoria(avversario, _side_mago, 0);
+            print_mem(avversario, _side_mago, 0);
         break;
         case 2:
-        if(sel_print == _highlight_mem && sel_giocatore == avversario+1 && sel_lato == _side_mano)
-            evidenzia_Memoria(sel_giocatore, sel_lato, passa_posSel);
+        if(sel_print == _highlight_mem && select_player == avversario+1 && select_handdeck == _side_mano)
+            highlight_mem(select_player, select_handdeck, passa_posSel);
         else
-            stampa_Memoria(avversario+1, _side_mano, 0);
+            print_mem(avversario+1, _side_mano, 0);
         break;
         case 3:
-        if(sel_print == _highlight_mem && sel_giocatore == avversario+1 && sel_lato == _side_campo)
-            evidenzia_Memoria(sel_giocatore, sel_lato, passa_posSel);
+        if(sel_print == _highlight_mem && select_player == avversario+1 && select_handdeck == _side_campo)
+            highlight_mem(select_player, select_handdeck, passa_posSel);
         else
-            stampa_Memoria(avversario+1, _side_campo, 0);
+            print_mem(avversario+1, _side_campo, 0);
         break;
         case 4:
-        if(sel_print == _highlight_mem && sel_giocatore == giocatore+1 && sel_lato == _side_campo)
-            evidenzia_Memoria(sel_giocatore, sel_lato, passa_posSel);
+        if(sel_print == _highlight_mem && select_player == giocatore+1 && select_handdeck == _side_campo)
+            highlight_mem(select_player, select_handdeck, passa_posSel);
         else
-            stampa_Memoria(giocatore+1, _side_campo, 0);
+            print_mem(giocatore+1, _side_campo, 0);
         break;
         case 5:
-        if(sel_print == _highlight_mem && sel_giocatore == giocatore+1 && sel_lato == _side_mano)
-            evidenzia_Memoria(sel_giocatore, sel_lato, passa_posSel);
+        if(sel_print == _highlight_mem && select_player == giocatore+1 && select_handdeck == _side_mano)
+            highlight_mem(select_player, select_handdeck, passa_posSel);
         else
-            stampa_Memoria(giocatore+1, _side_mano, 0);
+            print_mem(giocatore+1, _side_mano, 0);
         break;
         case 6:
-        if(sel_print == _highlight_mem && sel_giocatore == giocatore && sel_lato == _side_mago)
-            evidenzia_Memoria(sel_giocatore, sel_lato, passa_posSel);
+        if(sel_print == _highlight_mem && select_player == giocatore && select_handdeck == _side_mago)
+            highlight_mem(select_player, select_handdeck, passa_posSel);
         else       
-            stampa_Memoria(giocatore, _side_mago, 0);
+            print_mem(giocatore, _side_mago, 0);
         break;
         default:
         printf("\nErrore: nessun valore corrisponde ad un blocco del campo di battaglia da stampare!\n");
@@ -2861,83 +2856,83 @@ static void stampa_sceltaMemoria(int Layer, int passa_posSel, int passa_Target){
 
 // Funzione static void chiamata da combatti che si occupa di far passare per indirizzo tutte le variabili
 // che servono per trovare dove la posizione sul campo di battaglia di una determinata carta/mago,
-// e in input_Gioco chiamato da combatti.
-static void stampa_sceltaMenu(int passa_giocatore, int *passa_SelTar[2], int *passa_checkLayer, int passa_Lato, int passa_Layer){
+// e in game_input chiamato da combatti.
+static void print_validchoices(int passa_giocatore, int *passa_SelTar[2], int *passa_checkLayer, int passa_Lato, int passa_Layer){
     if(fun_print == _show_all_selections || fun_print == _show_dmg_selections || fun_print == _show_only_creatures_dmg 
     || fun_print == _show_heal_selections || fun_print == _show_creature_summonings)
-        passa_outputSelTar(passa_giocatore, passa_SelTar, &*passa_checkLayer, passa_Layer, passa_Lato);
-    else if(fun_print == _show_single_address_mem && passa_giocatore == sel_giocatore && passa_Lato == sel_lato)
-        stampa_indirizzoMemoria(sel_giocatore, sel_lato, *passa_SelTar[0]);
+        sel_targetoutput(passa_giocatore, passa_SelTar, &*passa_checkLayer, passa_Layer, passa_Lato);
+    else if(fun_print == _show_single_address_mem && passa_giocatore == select_player && passa_Lato == select_handdeck)
+        print_memaddr(select_player, select_handdeck, *passa_SelTar[0]);
     return;
 }
 // -------------
 
-static void del_totaleDatiMemoria(void)
+static void delete_allmem(void)
 {
     // dealloca la memoria della prima struct Mago dinamicamente allocata.
     if(ptrmg_inizio != NULL)
-        elimina_datiMemoria(NULL, NULL, _Mago, _side_mazzo);
+        delete_memdata(NULL, NULL, _Mago, _side_mazzo);
     
     // dealloca la lista struct Mazzo che punta alla struct del primo Mago
     if(ptrmz_inizio[0] != NULL){
-        elimina_datiMemoria( NULL, NULL, _Mazzo, _side_mazzo);
-        scan_memoriaMago(_Mago); // aggiorna il puntatore globale *ptrmago.
-        scan_memoriaMazzo(-1, NULL, NULL, NULL, _side_mazzo);
-        inizializza_manoCampo(_ManoCampo, _side_mano); // assegna NULL l'array mano associato al primo mago.
-        inizializza_manoCampo(_ManoCampo, _side_campo); // assegna NULL l'array campo associato al primo mago.
+        delete_memdata( NULL, NULL, _Mazzo, _side_mazzo);
+        scan_mage(_Mago); // aggiorna il puntatore globale *ptrmago.
+        scan_deck(-1, NULL, NULL, NULL, _side_mazzo);
+        init_handfield(_ManoCampo, _side_mano); // assegna NULL l'array mano associato al primo mago.
+        init_handfield(_ManoCampo, _side_campo); // assegna NULL l'array campo associato al primo mago.
     }
 
     // dealloca la lista struct Mazzo che punta alla struct del secondo Mago
     if(ptrmz_inizio[1] != NULL){
-        elimina_datiMemoria(NULL, NULL, _MazzoAvv, _side_mazzo);
-        scan_memoriaMago(_MagoAvv); // aggiorna il puntatore globale *ptrmazzo.
-        scan_memoriaMazzo(-3, NULL, NULL, NULL, _side_mazzo);
-        inizializza_manoCampo(_ManoCampoAvv, _side_mano); // assegna NULL l'array mano associato al primo mago.
-        inizializza_manoCampo(_ManoCampoAvv, _side_campo); // assegna NULL l'array campo associato al secondo mago.
+        delete_memdata(NULL, NULL, _MazzoAvv, _side_mazzo);
+        scan_mage(_MagoAvv); // aggiorna il puntatore globale *ptrmazzo.
+        scan_deck(-3, NULL, NULL, NULL, _side_mazzo);
+        init_handfield(_ManoCampoAvv, _side_mano); // assegna NULL l'array mano associato al primo mago.
+        init_handfield(_ManoCampoAvv, _side_campo); // assegna NULL l'array campo associato al secondo mago.
     }
 
     if(mode == _1versus1)
-        elimina_datiMemoria(NULL, NULL, _Mago, _side_mazzo);
+        delete_memdata(NULL, NULL, _Mago, _side_mazzo);
     else if(mode == _2versus2){
         if(ptrmz_inizio[2] != NULL){
-            elimina_datiMemoria(NULL, NULL, _Mazzo2, _side_mazzo); // dealloca la lista dinamica della struct del secondo Mago della squadra amica.
-            scan_memoriaMago(_Mago2); // aggiorna *ptrmago all'indirizzo del secondo mago avversario.
-            scan_memoriaMazzo(-2, NULL, NULL, NULL, _side_mazzo);
-            inizializza_manoCampo(_ManoCampo2, _side_mano); // assegna a NULL l'array della mano associato al primo mago avversario.
-            inizializza_manoCampo(_ManoCampo2, _side_campo); // assegna a NULL l'array della mano associato al secondo mago avversario.
+            delete_memdata(NULL, NULL, _Mazzo2, _side_mazzo); // dealloca la lista dinamica della struct del secondo Mago della squadra amica.
+            scan_mage(_Mago2); // aggiorna *ptrmago all'indirizzo del secondo mago avversario.
+            scan_deck(-2, NULL, NULL, NULL, _side_mazzo);
+            init_handfield(_ManoCampo2, _side_mano); // assegna a NULL l'array della mano associato al primo mago avversario.
+            init_handfield(_ManoCampo2, _side_campo); // assegna a NULL l'array della mano associato al secondo mago avversario.
         }
 
         if(ptrmz_inizio[3] != NULL){
-            elimina_datiMemoria(NULL, NULL, _Mazzo2Avv, _side_mazzo); // dealloca la lista dinamica della struct del secondo Mago avversario.
-            scan_memoriaMago(_Mago2Avv);
-            scan_memoriaMazzo(-4, NULL, NULL, NULL, _side_mazzo);
-            inizializza_manoCampo(_ManoCampo2Avv, _side_mano);
-            inizializza_manoCampo(_ManoCampo2Avv, _side_campo);
+            delete_memdata(NULL, NULL, _Mazzo2Avv, _side_mazzo); // dealloca la lista dinamica della struct del secondo Mago avversario.
+            scan_mage(_Mago2Avv);
+            scan_deck(-4, NULL, NULL, NULL, _side_mazzo);
+            init_handfield(_ManoCampo2Avv, _side_mano);
+            init_handfield(_ManoCampo2Avv, _side_campo);
         }
 
-        elimina_datiMemoria(NULL, NULL, _Mago, _side_mazzo); // dealloca il mazzo del secondo mago nella squadra avversaria.
+        delete_memdata(NULL, NULL, _Mago, _side_mazzo); // dealloca il mazzo del secondo mago nella squadra avversaria.
     }
     
     inizializza_mago(); // resetta alcune variabili globali.
     
-    scan_memoriaMago(-1); // inizializza il puntatore *ptrmago a NULL.
+    scan_mage(-1); // inizializza il puntatore *ptrmago a NULL.
 
     // resetta al membro _none_memory i tipi enum della struct Memoria_Mago,
     giocatore = _none_memory;
     avversario = _none_memory;
-    sel_giocatore = _none_memory;
+    select_player = _none_memory;
 
     mode = _none_mode; // resetta al membro _none_mode i tipi enum della struct Evento_Gioco,
     mem_title = _title_visible; // resetta al membro _title_visible i tipi enum della struct Stampa_EvMemFun.
     
-    sel_lato = _none_side; // resetta al membro _none_side questa variabile intera globale.
+    select_handdeck = _none_side; // resetta al membro _none_side questa variabile intera globale.
     fun_print = _none_print_choice; // resetta al membro _none_print_choice i tipi enum della struct Memoria_Mago.
 
     impostato = false;
     return;
 }
 
-static void elimina_datiMemoria(Mago **nodo_Mago, Mazzo **nodo_Mazzo, int scelta_Elimina, int tipo_del)
+static void delete_memdata(Mago **nodo_Mago, Mazzo **nodo_Mazzo, int scelta_Elimina, int tipo_del)
 {
     switch (scelta_Elimina)
     {
@@ -2993,7 +2988,7 @@ static void elimina_datiMemoria(Mago **nodo_Mago, Mazzo **nodo_Mazzo, int scelta
 
 // Funzione static void che da un delay in output, facendo aspettare l'utente del tempo
 // prima di chiedere un input dall'output.
-static void set_delayClock(int passa_Delay, int len_Hold)
+static void set_delayclock(int passa_Delay, int len_Hold)
 {
     // il valore intero passato per parametri passa_Delay e' un valore che rappresenta la durata di un secondo,
     // piu' il valore e' alto, maggiore sara' il tempo per passare da un secondo a un altro e viceversa.
@@ -3008,12 +3003,12 @@ static void set_delayClock(int passa_Delay, int len_Hold)
     return;
 }
 
-static void chiedi_modeGioco(void)
+static void gamemode_menu(void)
 {
     char *input_mode = (char *)malloc(LEN); // inizializza l'input
     int ripeti_loop = 0;
     
-    clear_BufferANSI();
+    clear_ansi();
     do
     {
         printf("\nSeleziona una modalita' di gioco.\n");
@@ -3023,7 +3018,7 @@ static void chiedi_modeGioco(void)
          
         // restituisce un errore in output in caso non sia un input valido, oppure non ci sia alcun tipo di input
         // (esempio: viene premuto enter senza immettere nessun carattere).
-        clear_arrBuffer(input_mode, &ripeti_loop, 2);
+        clear_arrbuffer(input_mode, &ripeti_loop, 2);
         
         if (atoi(input_mode) == 1)
         {
@@ -3041,17 +3036,17 @@ static void chiedi_modeGioco(void)
         }
         else if (ripeti_loop != 0 && *input_mode != 'q')
         {
-            clear_BufferANSI();
+            clear_ansi();
             printf("\nErrore: l'input inserito non e' stato riconosciuto, per favore riprovare!\n");
             ripeti_loop = 0; // ripete il ciclo dopo l'output di errore.
         }
     } while (ripeti_loop != 1 && *input_mode != 'q');
     
-    clear_BufferANSI(); // prima di tornare nel menu principale pulisce l'output.
+    clear_ansi(); // prima di tornare nel menu principale pulisce l'output.
     return;
 }
 // -------------
-static void chiedi_magoMazzo(int scegli_Giocatore, int *scegli_Deck)
+static void magedeck_menu(int scegli_Giocatore, int *scegli_Deck)
 {
     // dichiarazione ed inizializzazione delle variabili locali...
     int selezione_classe = 0, selezione_deck = 0, input_char = 0, classe_Carta = 0;
@@ -3064,7 +3059,7 @@ static void chiedi_magoMazzo(int scegli_Giocatore, int *scegli_Deck)
     // ------------
     // "puliamo" l'output per non creare problemi tra le scanf precedentemente
     // dichiarate e la funzione fgets prossima ad essere chiamata
-    clear_BufferANSI();
+    clear_ansi();
     do
     {
         // richiesta in input per la creazione del PRIMO GIOCATORE
@@ -3075,7 +3070,7 @@ static void chiedi_magoMazzo(int scegli_Giocatore, int *scegli_Deck)
         // si utilizza la funzione fgets per evitare fallace di sicurezza
         // che potrebbero avvenire utilizzando la funzione scanf in questo caso...
         fgets(nome_Mago, LEN, stdin);
-        clear_arrBuffer(nome_Mago, &input_char, 1);
+        clear_arrbuffer(nome_Mago, &input_char, 1);
 
         // Verifica se la stringa nome_Mago equivale ad altre stringhe di altri maghi.
         // se entrambi i valori delle condizioni sono 1.
@@ -3089,7 +3084,7 @@ static void chiedi_magoMazzo(int scegli_Giocatore, int *scegli_Deck)
             input_char = -1;
 
         if(input_char == -1){
-            clear_BufferANSI();
+            clear_ansi();
             printf("\nErrore: nome gia' utilizzato, per favore riprovare.\n");
             input_char = 0; // reseetta il loop allora.
         }
@@ -3097,21 +3092,21 @@ static void chiedi_magoMazzo(int scegli_Giocatore, int *scegli_Deck)
 
     
     // chiediamo la classe del primo mago.
-    clear_BufferANSI(); // "pulisce" l'output.
+    clear_ansi(); // "pulisce" l'output.
     do
     {
-        stampa_tipoMazzo(NULL, scegli_Giocatore, 3);
+        print_playerdeck(NULL, scegli_Giocatore, 3);
         printf(ITA"\nE quale sarebbe la tua classe?\n"CLR);
         printf("1) Tenebre\n2) Vita\n3) Luce\n");
         printf("\nInserisci la classe da assegnare mago...\n");
         fgets(input_Classe, LEN, stdin);
-        clear_arrBuffer(input_Classe, NULL, 1);
+        clear_arrbuffer(input_Classe, NULL, 1);
 
         temp_classe = atoi(input_Classe);
 
         if (temp_classe < 1 || temp_classe > 3)
         {
-            clear_BufferANSI();
+            clear_ansi();
             printf("\nErrore: Classe non valida!\n\n");
             selezione_classe = 0;
         }
@@ -3138,25 +3133,25 @@ static void chiedi_magoMazzo(int scegli_Giocatore, int *scegli_Deck)
     // chiediamo per il primo mago il numero di carte da inserire dentro la struct Mazzo
     // e riempiremo la mano con 5 carte nella struct Mano
     
-    clear_BufferANSI(); // "pulisce" l'output.
+    clear_ansi(); // "pulisce" l'output.
     do
     {
         printf(ITA"\nCon quante carte vuoi combattere?\n"CLR);
         printf("\nInserisci il numero di carte che vuoi avere nel deck (il massimo che puoi scegliere e' di 60 carte)\n");
         fgets(prendi_Deck, LEN, stdin);
         
-        clear_arrBuffer(prendi_Deck, NULL, 1);
+        clear_arrbuffer(prendi_Deck, NULL, 1);
         *scegli_Deck = atoi(prendi_Deck);
 
         if (*scegli_Deck > 60)
         {
-            clear_BufferANSI();
+            clear_ansi();
             printf("\nErrore: numero di carte troppo alto!\n\n");
             selezione_deck = 0;
         }
         else if (*scegli_Deck <= 0)
         {
-            clear_BufferANSI();
+            clear_ansi();
             printf("\nErrore: valore di carte non valido!\n\n");
             selezione_deck = 0;
         }
@@ -3166,13 +3161,13 @@ static void chiedi_magoMazzo(int scegli_Giocatore, int *scegli_Deck)
 
     // chiamata di funzione struct, da qui si crea il primo nodo alla struct Mago
     nome_Mago = realloc(nome_Mago, *nome_Mago);
-    completamento_Mago(scegli_Giocatore, temp_classe, nome_Mago);
+    create_mage(scegli_Giocatore, temp_classe, nome_Mago);
 
     for (int i = 0; i < *scegli_Deck + 5; i++)
     {
-        generatore_Carte(&classe_Carta);
-        generatore_pv(&punti_Vita, temp_classe);
-        completamento_MazzoMano(1, scegli_Giocatore, classe_Carta, punti_Vita);
+        generate_card(&classe_Carta);
+        generate_hp(&punti_Vita, temp_classe);
+        create_deckand_hand(1, scegli_Giocatore, classe_Carta, punti_Vita);
 
         classe_Carta = 0;
         punti_Vita = 0;
@@ -3189,7 +3184,7 @@ static void chiedi_magoMazzo(int scegli_Giocatore, int *scegli_Deck)
 }
 
 // Funzione static void che genera casualmente i PV delle carte.
-static void generatore_Carte(int *Tipo)
+static void generate_card(int *Tipo)
 {
     // dichiarazione ed inizializzazione delle variabili locali...
     int prob_tipo = rand() % (100 + 1);
@@ -3213,7 +3208,7 @@ static void generatore_Carte(int *Tipo)
     return;
 }
 
-static void generatore_pv(int *PV, int Mago)
+static void generate_hp(int *PV, int Mago)
 {
     // generazione del numero intero che determinerà i punti vita
     // di ciascuna singola carta, questa variabile sarà utilizzata
@@ -3246,7 +3241,7 @@ static void generatore_pv(int *PV, int Mago)
         }
         break;
     default:
-        clear_BufferANSI();
+        clear_ansi();
         printf("\nErrore: input non riconosciuto, per favore riprovare.\n\n");
         return;
     }
@@ -3255,7 +3250,7 @@ static void generatore_pv(int *PV, int Mago)
 
 // Funzione static void che mette in coda gli indirizzi di memoria dinamicamente allocati
 // creando la lista dinamica relativa ai Maghi sia "buoni" che "cattivi".
-static void completamento_Mago(int assegna_Mago, int assegna_Classe, char *assegna_Nome)
+static void create_mage(int assegna_Mago, int assegna_Classe, char *assegna_Nome)
 {
     switch (assegna_Mago)
     {
@@ -3279,7 +3274,7 @@ static void completamento_Mago(int assegna_Mago, int assegna_Classe, char *asseg
 
 // Funzione static void che mette in coda gli indirizzi di memoria dinamicamente allocati delle
 // struct Mazzo, considerate carte che verranno giocate in partita.
-static void completamento_MazzoMano(int posizione_Carta, int assegna_Giocatore, int assegna_Carta, int assegna_PV)
+static void create_deckand_hand(int posizione_Carta, int assegna_Giocatore, int assegna_Carta, int assegna_PV)
 {
     // se questo parametro intero passato per valore vale 1, allora chiama in questo scope
     // delle funzioni static void che allocheranno in una lista struct Mazzo in coda memoria dinamica.
@@ -3313,32 +3308,32 @@ static void completamento_MazzoMano(int posizione_Carta, int assegna_Giocatore, 
         switch (assegna_Giocatore)
         {
         case 1:
-            scan_memoriaMago(_Mago); // aggiorna *ptrmago.
-            scan_memoriaMazzo(_Mazzo, temp, NULL, NULL, _side_mazzo); // aggiorna *ptrmazzo.
+            scan_mage(_Mago); // aggiorna *ptrmago.
+            scan_deck(_Mazzo, temp, NULL, NULL, _side_mazzo); // aggiorna *ptrmazzo.
             for(int i = 0; i < 5; i++){
                 arr_Mano1[i] = temp[i]; // assegna il membro di questo array con l'indirizzo di *ptrmazzo.
                 n_mano[0] = n_mano[0] + 1; // incrementa di 1 il numero di carte disponibili nella mano del primo mago "buono".
             }
             break;
         case 2:
-            scan_memoriaMago(_MagoAvv);
-            scan_memoriaMazzo(_MazzoAvv, temp, NULL, NULL, _side_mazzo);
+            scan_mage(_MagoAvv);
+            scan_deck(_MazzoAvv, temp, NULL, NULL, _side_mazzo);
             for(int i = 0; i < 5; i++){
                 arr_ManoAvv[i] = temp[i];
                 n_mano[1] = n_mano[1] + 1;
             }
             break;
         case 3:
-            scan_memoriaMago(_Mago2);
-            scan_memoriaMazzo(_Mazzo2, temp, NULL, NULL, _side_mazzo);
+            scan_mage(_Mago2);
+            scan_deck(_Mazzo2, temp, NULL, NULL, _side_mazzo);
             for(int i = 0; i < 5; i++){
                 arr_Mano2[i] = temp[i];
                 n_mano[2] = n_mano[2] + 1;
             }
             break;
         case 4:
-            scan_memoriaMago(_Mago2Avv);
-            scan_memoriaMazzo(_Mazzo2Avv, temp, NULL, NULL, _side_mazzo);
+            scan_mage(_Mago2Avv);
+            scan_deck(_Mazzo2Avv, temp, NULL, NULL, _side_mazzo);
             for(int i = 0; i < 5; i++){
                 arr_Mano2Avv[i] = temp[i];
                 n_mano[3] = n_mano[3] + 1;
@@ -3348,12 +3343,12 @@ static void completamento_MazzoMano(int posizione_Carta, int assegna_Giocatore, 
             printf("\nErrore: non e' stato possibile identificare in quale struct inizializzare la Mano!\n");
         }
         
-        scan_memoriaMago(_none_memory);
+        scan_mage(_none_memory);
     }
     return;
 }
 
-static void svuota_arrMagoMazzo(int passa_MagoMazzo){
+static void empty_magedeck(int passa_MagoMazzo){
     switch(passa_MagoMazzo){
         case 1: case 2:
         mago[0] = NULL;
@@ -3385,7 +3380,7 @@ static void svuota_arrMagoMazzo(int passa_MagoMazzo){
     return;
 }
 
-static void trasferisci_Carta(int partenza_Carta, int pos_Partenza, int pos_Arrivo){
+static void transfert_card(int partenza_Carta, int pos_Partenza, int pos_Arrivo){
     switch(partenza_Carta){
         case 1: case 2:
         if(pos_Partenza > -1 && pos_Arrivo > -1){
@@ -3469,7 +3464,7 @@ static void trasferisci_Carta(int partenza_Carta, int pos_Partenza, int pos_Arri
     return;
 }
 
-static void svuota_arrManoCampo(int passa_Memoria, int passa_ManoMazzo, int passa_Posizione){
+static void empty_magehand(int passa_Memoria, int passa_ManoMazzo, int passa_Posizione){
     int len_arr = 0;
     if(passa_ManoMazzo == _side_mano)
         len_arr = 6;
@@ -3525,7 +3520,7 @@ static void svuota_arrManoCampo(int passa_Memoria, int passa_ManoMazzo, int pass
 
 // Funzione static void che chiama la funzione che si occupa di pescare una carta, ovvero di copiare
 // un nodo di una determinata struct Mazzo, nella mano di un determinato mago.
-static void memoria_Pesca(int passa_Pesca, int *passa_Vittoria){
+static void draw_card(int passa_Pesca, int *passa_Vittoria){
     switch(passa_Pesca){
         case 1: case 2: case 3:
         pesca(passa_Pesca, &n_mano[0], &n_deck[0], &*passa_Vittoria);
@@ -3551,17 +3546,17 @@ static void pesca(int pesca_Mazzo, int *passa_Mano, int *passa_Deck, int *passa_
     switch(pesca_Mazzo){
         case 1: case 2: case 3:
         if(mago[0] != NULL){
-            scan_memoriaMago(_Mago);
+            scan_mage(_Mago);
             if(*passa_Mano < 6 && *passa_Deck >= 1){
-                scan_memoriaMazzo(_Mazzo, presta_Mazzo, NULL, NULL, _side_mazzo); // aggiorna *ptrmazzo.
+                scan_deck(_Mazzo, presta_Mazzo, NULL, NULL, _side_mazzo); // aggiorna *ptrmazzo.
                 ptrmazzo = presta_Mazzo[0]; // assegnazione dell'indirizzo della testa della struct Mazzo del primo mago.
-                selezione_sortArrMano(_ManoCampo, 1);
-                trasferisci_Carta(_Mazzo, -1, -1);
+                sel_handsorted(_ManoCampo, 1);
+                transfert_card(_Mazzo, -1, -1);
                 *passa_Mano = *passa_Mano + 1; // incrementa il numero di carte presente nella mano.
                 *passa_Deck = *passa_Deck - 1; // decrementa il numero di carte presente nel mazzo.
             }
             else if(*passa_Mano >= 6 && *passa_Deck >= 1){
-                scan_memoriaMazzo(_Mazzo, presta_Mazzo, NULL, NULL, _side_mazzo);
+                scan_deck(_Mazzo, presta_Mazzo, NULL, NULL, _side_mazzo);
                 ptrmazzo = presta_Mazzo[0];
 
                 elimina_nodoMazzo(&presta_Mazzo[0], ptrmg_inizio, &ptrmz_inizio[0], &ptrmz_fine[0]);
@@ -3571,17 +3566,17 @@ static void pesca(int pesca_Mazzo, int *passa_Mano, int *passa_Deck, int *passa_
         break;
         case 4: case 5: case 6:
         if(mago[2] != NULL){
-            scan_memoriaMago(_Mago2);
+            scan_mage(_Mago2);
             if(*passa_Mano < 6 && *passa_Deck >= 1){
-                scan_memoriaMazzo(_Mazzo2, presta_Mazzo, NULL, NULL, _side_mazzo);
+                scan_deck(_Mazzo2, presta_Mazzo, NULL, NULL, _side_mazzo);
                 ptrmazzo = presta_Mazzo[0];
-                selezione_sortArrMano(_ManoCampo2, 1);
-                trasferisci_Carta(_Mazzo2, -1, -1);
+                sel_handsorted(_ManoCampo2, 1);
+                transfert_card(_Mazzo2, -1, -1);
                 *passa_Mano = *passa_Mano + 1;
                 *passa_Deck = *passa_Deck - 1;
             }
             else if(*passa_Mano >= 6 && *passa_Deck >= 1){
-                scan_memoriaMazzo(_Mazzo2, presta_Mazzo, NULL, NULL, _side_mazzo);
+                scan_deck(_Mazzo2, presta_Mazzo, NULL, NULL, _side_mazzo);
                 ptrmazzo = presta_Mazzo[0];
                 elimina_nodoMazzo(&presta_Mazzo[0], ptrmg_inizio, &ptrmz_inizio[2], &ptrmz_fine[2]);
                 *passa_Deck = *passa_Deck - 1;
@@ -3590,17 +3585,17 @@ static void pesca(int pesca_Mazzo, int *passa_Mano, int *passa_Deck, int *passa_
         break;
         case 7: case 8: case 9:
         if(mago[1] != NULL){
-            scan_memoriaMago(_MagoAvv);
+            scan_mage(_MagoAvv);
             if(*passa_Mano < 6 && *passa_Deck >= 1){
-                scan_memoriaMazzo(_MazzoAvv, presta_Mazzo, NULL, NULL, _side_mazzo);
+                scan_deck(_MazzoAvv, presta_Mazzo, NULL, NULL, _side_mazzo);
                 ptrmazzo = presta_Mazzo[0];
-                selezione_sortArrMano(_ManoCampoAvv, 1);
-                trasferisci_Carta(_MazzoAvv, -1, -1);
+                sel_handsorted(_ManoCampoAvv, 1);
+                transfert_card(_MazzoAvv, -1, -1);
                 *passa_Mano = *passa_Mano + 1;
                 *passa_Deck = *passa_Deck - 1;
             }
             else if(*passa_Mano >= 6 && *passa_Deck >= 1){
-                scan_memoriaMazzo(_MazzoAvv, presta_Mazzo, NULL, NULL, _side_mazzo);
+                scan_deck(_MazzoAvv, presta_Mazzo, NULL, NULL, _side_mazzo);
                 ptrmazzo = presta_Mazzo[0];
                 elimina_nodoMazzo(&presta_Mazzo[0], ptrmg_inizio, &ptrmz_inizio[1], &ptrmz_fine[1]);
                 *passa_Deck = *passa_Deck - 1;
@@ -3609,17 +3604,17 @@ static void pesca(int pesca_Mazzo, int *passa_Mano, int *passa_Deck, int *passa_
         break;
         case 10: case 11: case 12:
         if(mago[3] != NULL){
-            scan_memoriaMago(_Mago2Avv);
+            scan_mage(_Mago2Avv);
             if(*passa_Mano < 6 && *passa_Deck >= 1){
-                scan_memoriaMazzo(_Mazzo2Avv, presta_Mazzo, NULL, NULL, _side_mazzo);
+                scan_deck(_Mazzo2Avv, presta_Mazzo, NULL, NULL, _side_mazzo);
                 ptrmazzo = presta_Mazzo[0];
-                selezione_sortArrMano(_ManoCampo2Avv, 1);
-                trasferisci_Carta(_Mazzo2Avv, -1, -1);
+                sel_handsorted(_ManoCampo2Avv, 1);
+                transfert_card(_Mazzo2Avv, -1, -1);
                 *passa_Mano = *passa_Mano + 1;
                 *passa_Deck = *passa_Deck - 1;
             }
             else if(*passa_Mano >= 6 && *passa_Deck >= 1){
-                scan_memoriaMazzo(_Mazzo2Avv, presta_Mazzo, NULL, NULL, _side_mazzo);
+                scan_deck(_Mazzo2Avv, presta_Mazzo, NULL, NULL, _side_mazzo);
                 ptrmazzo = presta_Mazzo[0];
                 elimina_nodoMazzo(&presta_Mazzo[0], ptrmg_inizio, &ptrmz_inizio[3], &ptrmz_fine[3]);
                 *passa_Deck = *passa_Deck - 1;
@@ -3629,14 +3624,14 @@ static void pesca(int pesca_Mazzo, int *passa_Mano, int *passa_Deck, int *passa_
         default:
         printf("\nErrore: nessun valore corrisponde ad una carta da pescare!\n");
     }
-    scan_memoriaMazzo(_none_memory, NULL, 0, 0, _none_side);
+    scan_deck(_none_memory, NULL, 0, 0, _none_side);
 
     // chiamata di funzione che rileva il numero carte presenti nel mazzo.
-    presenza_Mazzo(pesca_Mazzo, *&passa_Vincita);
+    thereis_deck(pesca_Mazzo, *&passa_Vincita);
     return;
 }
 
-static void inc_decManoDeck(int passa_manoDeck, int tipo_Operazione, int val_Operazione){
+static void add_cardtohand(int passa_manoDeck, int tipo_Operazione, int val_Operazione){
     switch(passa_manoDeck){
         case 1: case 4:
         if(tipo_Operazione == 0)
@@ -3704,13 +3699,13 @@ static void inc_decManoDeck(int passa_manoDeck, int tipo_Operazione, int val_Ope
     return;
 }
 // ------------
-static void stampa_mano(Mano *passa_arr[], int memoria_Mano, int evidenzia_Mano)
+static void print_magehand(Mano *passa_arr[], int memoria_Mano, int evidenzia_Mano)
 {
     int ctr = 0, pass_check = 0;
     char *prendi_tipo;
 
     if(mem_title == _title_visible)
-        stampa_titoloMemoria(memoria_Mano, _side_mano, 1);
+        print_playername(memoria_Mano, _side_mano, 1);
     // pass_check e' una variabile passata per valore che rappresenta il numero
     // di righe in cui va a capo, per stampare graficamente la carta nell'array mano,
     while (pass_check < 2)
@@ -3736,7 +3731,7 @@ static void stampa_mano(Mano *passa_arr[], int memoria_Mano, int evidenzia_Mano)
                 }
                 break;
             case 1:
-                stampa_tipoMazzo(&prendi_tipo, passa_arr[ctr]->tipo_carta, 2);
+                print_playerdeck(&prendi_tipo, passa_arr[ctr]->tipo_carta, 2);
                 if (ctr == evidenzia_Mano)
                     printf(YEL UND BOL "%s"CLR, prendi_tipo);
                 else
@@ -3797,17 +3792,17 @@ static void stampa_mano(Mano *passa_arr[], int memoria_Mano, int evidenzia_Mano)
         }
     }
     if(fun_print == _show_all_address_mem)
-        stampa_indirizzoMemoria(memoria_Mano, _side_mano, -1);
+        print_memaddr(memoria_Mano, _side_mano, -1);
     return;
 }
 
-static void stampa_campo(Campo *passa_arr[], int mem_Campo, int evidenzia_Campo)
+static void print_gamefield(Campo *passa_arr[], int mem_Campo, int evidenzia_Campo)
 {
     int ctr = 0, pass_check = 0;
     char *prendi_tipo;
 
     if(mem_title == _title_visible)
-        stampa_titoloMemoria(mem_Campo, _side_campo, 1);
+        print_playername(mem_Campo, _side_campo, 1);
     while (pass_check < 2)
     {
         if (passa_arr[ctr] != NULL)
@@ -3826,7 +3821,7 @@ static void stampa_campo(Campo *passa_arr[], int mem_Campo, int evidenzia_Campo)
                 }
                 break;
             case 1:
-                stampa_tipoMazzo(&prendi_tipo, passa_arr[ctr]->tipo_carta, 2);
+                print_playerdeck(&prendi_tipo, passa_arr[ctr]->tipo_carta, 2);
                 if (ctr == evidenzia_Campo)
                     printf(YEL UND BOL "%s"CLR, prendi_tipo);
                 else
@@ -3861,7 +3856,7 @@ static void stampa_campo(Campo *passa_arr[], int mem_Campo, int evidenzia_Campo)
         }
     }
     if(fun_print == _show_all_address_mem)
-        stampa_Indirizzo(passa_arr, NULL, NULL, _side_campo, -1);
+        print_addr(passa_arr, NULL, NULL, _side_campo, -1);
     return;
 }
 
@@ -3879,8 +3874,8 @@ static void gioca_carta(Mazzo *carta_Scelta, Mazzo *carta_Puntata, Mago *mg_Punt
             action[2] = _completed_action;
         }
         else if(event == _evoke_creature){
-            trasferisci_Carta(giocatore+1, *pos_selPuntata[0], *pos_selPuntata[1]);
-            inc_decManoDeck(giocatore+1, 1, 1); // decrementa il valore che conta il numero delle carta sul mazzo di 1.
+            transfert_card(giocatore+1, *pos_selPuntata[0], *pos_selPuntata[1]);
+            add_cardtohand(giocatore+1, 1, 1); // decrementa il valore che conta il numero delle carta sul mazzo di 1.
         }
         break;
         case 1:
@@ -3889,8 +3884,8 @@ static void gioca_carta(Mazzo *carta_Scelta, Mazzo *carta_Puntata, Mago *mg_Punt
                 carta_Puntata->carta_punti_vita = 0;
 
             if(carta_Puntata->carta_punti_vita == 0){
-                svuota_arrManoCampo(avversario, _side_campo, *pos_selPuntata[1]); // assegnazione a NULL della posizione della carta distrutta sull'array del campo avversario.
-                elimina_datiMemoria(NULL, &carta_Puntata, avversario+1, _side_nodoMazzo);
+                empty_magehand(avversario, _side_campo, *pos_selPuntata[1]); // assegnazione a NULL della posizione della carta distrutta sull'array del campo avversario.
+                delete_memdata(NULL, &carta_Puntata, avversario+1, _side_nodoMazzo);
             }
             // azione associata all'utilizzo di un effetto carta e' stata completata, pertanto la seconda posizione
             // dell'array action gli viene assegnato il valore _completed_action.
@@ -3923,10 +3918,10 @@ static void gioca_carta(Mazzo *carta_Scelta, Mazzo *carta_Puntata, Mago *mg_Punt
     }
     
     if(event == _play_throwaway_card && carta_Scelta != NULL){                
-        svuota_arrManoCampo(sel_giocatore, _side_mano, *pos_selPuntata[0]);
-        elimina_datiMemoria(NULL, &carta_Scelta, sel_giocatore, _side_nodoMazzo); // posizione dell'array mano del giocatore protagonista del turno corrente, aggiornata con l'assegnazione di NULL.
+        empty_magehand(select_player, _side_mano, *pos_selPuntata[0]);
+        delete_memdata(NULL, &carta_Scelta, select_player, _side_nodoMazzo); // posizione dell'array mano del giocatore protagonista del turno corrente, aggiornata con l'assegnazione di NULL.
 
-        inc_decManoDeck(giocatore+1, 1, 1); // decremento del valore che rappresenta il numero di carte presente nella mano del mago che sta giocando in un determinato turno.
+        add_cardtohand(giocatore+1, 1, 1); // decremento del valore che rappresenta il numero di carte presente nella mano del mago che sta giocando in un determinato turno.
     }
     return;
  }
@@ -3958,29 +3953,29 @@ static void attacca(Mazzo *sel_Carta, Mazzo *tar_Carta, Mago *tar_Mago, int *pos
     // scelta dal giocatore creatura oppure di un altro tipo qualsiasi sul campo di battaglia,
     // il mago/creatura a cui sta effettuando un attacco.
     if(tar_Carta != NULL && tar_Carta->carta_punti_vita <= 0){
-        svuota_arrManoCampo(avversario+1, _side_campo, *pos_selTar[1]); // dealloca la carta nemica dalla lista in coda.
-        elimina_datiMemoria(NULL, &tar_Carta, tar_giocatore, _side_nodoMazzo); // assegnazione a NULL della posizione su un array campo/mano.
+        empty_magehand(avversario+1, _side_campo, *pos_selTar[1]); // dealloca la carta nemica dalla lista in coda.
+        delete_memdata(NULL, &tar_Carta, target_player, _side_nodoMazzo); // assegnazione a NULL della posizione su un array campo/mano.
     }
     if(sel_Carta != NULL && sel_Carta->tipo_carta == 0 && sel_Carta->carta_punti_vita <= 0){
-        svuota_arrManoCampo(giocatore+1, _side_campo, *pos_selTar[0]);  // dealloca la carta nemica dalla lista in coda.
-        elimina_datiMemoria(NULL, &sel_Carta, sel_giocatore, _side_nodoMazzo); // assegnazione a NULL della posizione su un array campo/mano.
+        empty_magehand(giocatore+1, _side_campo, *pos_selTar[0]);  // dealloca la carta nemica dalla lista in coda.
+        delete_memdata(NULL, &sel_Carta, select_player, _side_nodoMazzo); // assegnazione a NULL della posizione su un array campo/mano.
     }
     if(tar_Mago != NULL && tar_Mago->mago_punti_vita <= 0){
         // dealloca il mago da una nodo di una struct Mago.
-        svuota_arrManoCampo(avversario+1, _side_mano, -1);
-        svuota_arrManoCampo(avversario+1, _side_campo, -1);
+        empty_magehand(avversario+1, _side_mano, -1);
+        empty_magehand(avversario+1, _side_campo, -1);
 
-        scan_memoriaMago(avversario);
-        elimina_datiMemoria(NULL, NULL, avversario+1, _side_mazzo);
-        elimina_datiMemoria(&ptrmago, NULL, avversario, _side_nodoMago);
+        scan_mage(avversario);
+        delete_memdata(NULL, NULL, avversario+1, _side_mazzo);
+        delete_memdata(&ptrmago, NULL, avversario, _side_nodoMago);
 
-        svuota_arrMagoMazzo(avversario+2);
-        svuota_arrMagoMazzo(avversario);
+        empty_magedeck(avversario+2);
+        empty_magedeck(avversario);
 
-        inc_decManoDeck(avversario, 1, 1);
+        add_cardtohand(avversario, 1, 1);
         
-        scan_memoriaMago(_none_memory);
-        scan_memoriaMazzo(_none_memory, NULL, NULL, NULL, _none_side);
+        scan_mage(_none_memory);
+        scan_deck(_none_memory, NULL, NULL, NULL, _none_side);
         
         // quando event vale _dead_mage nella funzione combatti verra' stampato in output che il mago
         // avversario in quel determinato turno e' stato sconfitto.

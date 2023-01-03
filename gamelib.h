@@ -29,9 +29,9 @@
 // -------------
 // posto per le dichiarazioni di funzione prototipo void specificate con lo specifier extern
 // la loro dichiarazione in questo file, la loro definizione in gamelib.c.
-extern void imposta_gioco(int *, int);
-extern void combatti(int *);
-extern void termina_gioco(int *);
+extern void set_game(int *, int);
+extern void start_game(int *);
+extern void quit_game(int *);
 // -------------
 // dichiarazioni delle struct e dei suoi elementi, incluse la loro definizione al prossimo
 // indirizzo per le liste dinamiche
@@ -70,17 +70,14 @@ typedef struct Carta Mazzo;
 typedef struct Carta Mano;
 typedef struct Carta Campo;
 // -------------
-// dichiarazioni di funzioni utili sia per l'input che per l'output del programma,
-// con specifier static (dichiarate e definite in gamelib.h), leggibili in tutti
-// gli altri file (gamelib.c, main.c).
-static void clear_arrBuffer(char *, int *, int);
-static void clear_BufferANSI(void);
+static void clear_arrbuffer(char *, int *, int);
+static void clear_ansi(void);
 // -------------
 // questa funzione semplicemente rende l'input leggibile ad ogni chiamata fgets
 // esattamente come lo vuole intendere l'utente, ed anche a prova di utente
 // che vuole testare, oppure sbaglia a immettere l'input in molteplici modi
 // questa funzione tenta di prevenire questo, in 2 strategie diverse
-static void clear_arrBuffer(char *Buffer, int *passa_input, int scelta_Buffer)
+static void clear_arrbuffer(char *Buffer, int *passa_input, int scelta_Buffer)
 {
     bool err_conferma = false;
 
@@ -92,7 +89,7 @@ static void clear_arrBuffer(char *Buffer, int *passa_input, int scelta_Buffer)
 
     if (Buffer[0] == 0)
     {
-        clear_BufferANSI();
+        clear_ansi();
         // se non ci sono caratteri fa ritornare l'esecuzione alla chiamata di questa funzione
         // portandosi dietro di se (oppure no, decide il programmatore) un valore booleano
         // di 1, segnalando che esiste un input errato.
@@ -115,7 +112,7 @@ static void clear_arrBuffer(char *Buffer, int *passa_input, int scelta_Buffer)
             // verifica se il valore della lunghezza della stringa, supera 15,
             // utile per l'assegnazione del nome ad un mago durante il character creation nel gioco.
             
-            clear_BufferANSI(); // "pulisce" l'output se l'input e' maggiore della lunghezza che vale 15.
+            clear_ansi(); // "pulisce" l'output se l'input e' maggiore della lunghezza che vale 15.
             if (err_conferma == false)
                 printf("\nErrore: l'input inserito e' troppo grande (MAX. 15 caratteri), per favore riprovare!\n\n");
             err_conferma = true;
@@ -144,7 +141,7 @@ static void clear_arrBuffer(char *Buffer, int *passa_input, int scelta_Buffer)
                     if (Buffer[s] != 0 && Buffer[s] != 32)
                     {
                         if (err_conferma == false){
-                            clear_BufferANSI();
+                            clear_ansi();
                             printf("\nErrore: l'input inserito non e' stato riconosciuto, per favore riprovare!\n\n");
                             // il controllo ha avuto un esito negativo (e' presente un errore).
                         }
@@ -169,7 +166,7 @@ static void clear_arrBuffer(char *Buffer, int *passa_input, int scelta_Buffer)
         break;
             // se nessun valore e' lo stesso dei case, allora ripeti il ciclo (se l'utente lo decide).
         default:
-            clear_BufferANSI(); // pulisce l'output se l'input non e' valido.
+            clear_ansi(); // pulisce l'output se l'input non e' valido.
             printf("\nErrore: Nessun valore corrisponde ad un input da analizzare!\n");
             err_conferma = false;
             *passa_input = 0;
@@ -190,7 +187,7 @@ static void clear_arrBuffer(char *Buffer, int *passa_input, int scelta_Buffer)
 }
 
 // questa funzione "pulisce" l'output del terminale
-static void clear_BufferANSI(void){
+static void clear_ansi(void){
     printf("\e[1;1H\e[2J");
     return;
 }
