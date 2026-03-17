@@ -5,4 +5,4 @@ I am proud of this project, and I can consider it my very first game, but it has
 
 
 To run using GCC compiler:
-gcc -o <name> main.o gamelib.o -std=c11 -Wall
+gcc -o output-file main.o gamelib.o -std=c11 -Wall
