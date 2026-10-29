@@ -4,5 +4,10 @@
 
 ## To run using GCC compiler:
 ```
+gcc -c gamelib.c main.c -std=c11 -Wall
+
 gcc -o output-file main.o gamelib.o -std=c11 -Wall
+
+# Quick alternative: keep it one-command
+gcc gamelib.c main.c -o gioco -std=c11 -Wall
 ```

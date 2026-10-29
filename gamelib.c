@@ -27,7 +27,7 @@ static void print_mage(int, int);
 static void print_deck(int, int, int *);
 static void sel_handsorted(int, int);
 static void arr_handsort(Mano *[], int);
-static void clear_arrbuffer(char *, int *, int);
+static void clear_arrBuffer(char *, int *, int);
 static void sel_targetoutput(int, int *[2], int *, int, int);
 static void print_memaddr(int, int, int);
 static void print_addr(Mazzo *[], Mazzo *, Mago *, int, int);
@@ -578,7 +578,7 @@ Mazzo *elimina_Mazzo(Mago **inizio_mago, Mazzo **inizio_mazzo, Mazzo **fine_mazz
 
 // Funzione che chiama funzioni dedicate sia alla creazione dei maghi (Inizializza Lista Mago e Mazzo
 // di ogni giocatore)
-void imposta_gioco(int *passa_Menu, int scelta_input)
+void set_game(int *passa_Menu, int scelta_input)
 {
     switch (scelta_input)
     {
@@ -591,7 +591,7 @@ void imposta_gioco(int *passa_Menu, int scelta_input)
         break;
     case 2:
         if (impostato == true)
-            combatti(&select_menu); // se la memoria e' allocata ed il giocatore decide di giocare, inizia la partita.
+            start_game(&select_menu); // se la memoria e' allocata ed il giocatore decide di giocare, inizia la partita.
         else
         {
             clear_ansi();
@@ -610,11 +610,11 @@ void imposta_gioco(int *passa_Menu, int scelta_input)
     return;
 }
 
-void combatti(int *passa_Menu)
+void start_game(int *passa_Menu)
 {
     // funzione per iniziare la fase ludica del gioco
     // tutte le variabili assegnate in imposta_gioco, avranno significato
-    // ed effetto nella funzione combatti
+    // ed effetto nella funzione start_game
     // -----------
     int *prendi_selTar[2], vincitore = 0, sel_cartaMago = -1;
     int tar_cartaMago = -1, fase_input = 1, layer_Trovato = 0;
@@ -698,7 +698,7 @@ void combatti(int *passa_Menu)
     return;
 }
 
-void termina_gioco(int *passa_Menu)
+void quit_game(int *passa_Menu)
 {
     // funzione per "chiudere il gioco", o meglio dire tornare alla funzione main nel file
     // main.c
@@ -712,7 +712,7 @@ void termina_gioco(int *passa_Menu)
         printf("\nUscire da Tragic?\n");
         printf("\nPremi y per uscire oppure n per tornare indietro.\n");
         fgets(input_exit, LEN, stdin);
-        clear_arrbuffer(input_exit, &err_exit, 2);
+        clear_arrBuffer(input_exit, &err_exit, 2);
 
         if (*input_exit == 'y' || *input_exit == 'Y')
         {
@@ -886,7 +886,7 @@ static void dealloc_mem(void)
         printf("\nPremi y per confermare, n per declinare e tornare al Menu.\n");
         fflush(stdout);
         fgets(input_conferma, LEN, stdin);
-        clear_arrbuffer(input_conferma, &torna_errore, 2);
+        clear_arrBuffer(input_conferma, &torna_errore, 2);
 
         if (*input_conferma == 'y')
         {
@@ -1335,7 +1335,7 @@ static void guide_menu(void){
         printf("\nSeleziona una delle seguenti opzioni, oppure q per uscire:\n");
 
         fgets(selezione_guida, LEN, stdin); // inserisci l'input.
-        clear_arrbuffer(selezione_guida, &escape_guida, 1); // pulisce gli spazi dentro gli elementi della stringa selezione_guida.
+        clear_arrBuffer(selezione_guida, &escape_guida, 1); // pulisce gli spazi dentro gli elementi della stringa selezione_guida.
 
         if(*selezione_guida != 'q' && *selezione_guida != 'Q'){
             clear_ansi();
@@ -1540,7 +1540,7 @@ static void mem_menu(void)
 
         printf("\nSeleziona una delle seguenti liste da stampare, oppure q per uscire:\n");
         fgets(selezione_memoria, LEN, stdin); // chiede un input all'utente di stampare un numero tra 1 a 12.
-        clear_arrbuffer(selezione_memoria, &set_escape, 1); // pulisci gli spazi dopo la chiamata fgets
+        clear_arrBuffer(selezione_memoria, &set_escape, 1); // pulisci gli spazi dopo la chiamata fgets
 
         if (set_escape == 1 && (*selezione_memoria != 'q' && *selezione_memoria != 'Q')){
             // se selezione_memoria il suo valore implicitamente convertito in decimale corrisponde ai valori di questa
@@ -1581,12 +1581,12 @@ static void game_input(char *passa_Gioco, int *presta_selTar[2], int *caso_Menu,
         printf("\n\n\t\t\tq - Esci dalla partita\n"); // si puo' uscire dalla partita in qualsiasi momento del gioco.
 
         fgets(passa_Gioco, LEN, stdin);
-        clear_arrbuffer(passa_Gioco, NULL, 1);
+        clear_arrBuffer(passa_Gioco, NULL, 1);
         
         if(*passa_Gioco != 'q' && *passa_Gioco != 'Q'){
             switch(atoi(passa_Gioco)){
                 case 1:
-                // mostra tutti gli input disponibili, alla prossima iterazione del ciclo do while in combatti, 
+                // mostra tutti gli input disponibili, alla prossima iterazione del ciclo do while in start_game, 
                 // cambiera' l'output di cosa chiedere in input.
                 fun_print = _show_all_selections;
                 // il primo elemento dell'array di caratteri, ha il valore decimale ASCII associato allo space key,
@@ -1635,7 +1635,7 @@ static void game_input(char *passa_Gioco, int *presta_selTar[2], int *caso_Menu,
                 clear_ansi();
                 printf("\nVuoi uscire dal gioco? (la partita verra' salvata)\n\nPremi y per confermare, n per declinare.\n");
                 fgets(passa_Gioco, LEN, stdin);
-                clear_arrbuffer(passa_Gioco, NULL, 1);
+                clear_arrBuffer(passa_Gioco, NULL, 1);
                 
                 if(*passa_Gioco == 'y' || *passa_Gioco == 'Y'){
                     // se la condizione e' vera, assegna a NULL, se non sono equivalenti a NULL
@@ -1657,7 +1657,7 @@ static void game_input(char *passa_Gioco, int *presta_selTar[2], int *caso_Menu,
                     break; // interruzione diretta di questo ciclo dato che *passa_Gioco non sara' mai uguale a 'n' oppure 'N' se si vuole uscire dal gioco in questo caso.
                 }
                 else if(*passa_Gioco == 'n' || *passa_Gioco == 'N'){
-                    *caso_Menu = 1; // termina la chiamata di questa funzione, reitera il ciclo in combatti, ristampa la prima sezione di input.
+                    *caso_Menu = 1; // termina la chiamata di questa funzione, reitera il ciclo in start_game, ristampa la prima sezione di input.
                     event = _none_event; // per sicurezza, se vi sono associati eventi non desiderati, resetta questa definizione di tipo enum.
                 }
             }while(*passa_Gioco != 'n' && *passa_Gioco != 'N');
@@ -1671,10 +1671,10 @@ static void game_input(char *passa_Gioco, int *presta_selTar[2], int *caso_Menu,
             // ma che non daranno errore in output, semplicemente faranno reiterare il ciclo per non dare output fastidiosi al giocatore
             // mentre gioca).
             
-            *reset_Pos = 0; // resetta per sicurezza come per prevenire un ciclo infinito nella funzione combatti.
+            *reset_Pos = 0; // resetta per sicurezza come per prevenire un ciclo infinito nella funzione start_game.
 
             fgets(passa_Gioco, LEN, stdin);
-            clear_arrbuffer(passa_Gioco, NULL, 1);
+            clear_arrBuffer(passa_Gioco, NULL, 1);
 
             if(*passa_Gioco != 'q' && *passa_Gioco != 'Q')
                 *presta_selTar[0] = atoi(passa_Gioco);
@@ -1694,7 +1694,7 @@ static void game_input(char *passa_Gioco, int *presta_selTar[2], int *caso_Menu,
             // gli verra' assegnato a uno solo dei due un indirizzo di memoria
             get_arraddress(&ptr_selMago, &ptr_selCarta, select_player, select_handdeck, *presta_selTar[0]);
             
-            *caso_Menu = *caso_Menu + 1; // incrementa questa variabile, reitera il ciclo, richiama questa funzione da combatti, passa alla sezione successiva.
+            *caso_Menu = *caso_Menu + 1; // incrementa questa variabile, reitera il ciclo, richiama questa funzione da start_game, passa alla sezione successiva.
 
             *passa_Gioco = ' ';
 
@@ -1794,7 +1794,7 @@ static void game_input(char *passa_Gioco, int *presta_selTar[2], int *caso_Menu,
         printf("\n\n\t\t\tq - Torna indietro\n");
 
         fgets(passa_Gioco, LEN, stdin); // richiedi l'input al giocatore.
-        clear_arrbuffer(passa_Gioco, NULL, 1);
+        clear_arrBuffer(passa_Gioco, NULL, 1);
 
         if(*passa_Gioco != 'q' && *passa_Gioco != 'Q')
             targetinput_sel(*&caso_Menu, atoi(passa_Gioco), *tipo_selScelta);
@@ -1852,7 +1852,7 @@ static void game_input(char *passa_Gioco, int *presta_selTar[2], int *caso_Menu,
             printf("\n\n\t\t\tq - Torna indietro\n");
 
             fgets(passa_Gioco, LEN, stdin);
-            clear_arrbuffer(passa_Gioco, NULL, 1);
+            clear_arrBuffer(passa_Gioco, NULL, 1);
             
             if(*passa_Gioco != 'q' && *passa_Gioco != 'Q')
                 *presta_selTar[1] = atoi(passa_Gioco); // assegnazione di un valore intero convertito implicitamente.
@@ -1968,8 +1968,8 @@ static void choiceof_play(int *passa_selTar[2], int *passa_Vincitore){
             event = _change_turn; // alloca cambia il turno, perche' questo giocatore non puo' piu' giocare dato che la sua lista e' stata deallocata.
         }
 
-        // se e' maggiore *passa_Vincitore, variabile passata per indirizzo e dichiarata in combatti, di zero,
-        // a priori verra' terminato il ciclo do while in combatti e stampata la schermata di vittoria, sconfitta
+        // se e' maggiore *passa_Vincitore, variabile passata per indirizzo e dichiarata in start_game, di zero,
+        // a priori verra' terminato il ciclo do while in start_game e stampata la schermata di vittoria, sconfitta
         // oppure pareggio.
         if(*passa_Vincitore > 0)
             event = _print_ending;
@@ -2212,7 +2212,7 @@ static void print_deck(int memoria_Mazzo, int len_Mazzo, int *passa_Blocco)
             printf("\npremi q per uscire dal Menu.\n\n");
 
             fgets(loop_mazzo, LEN, stdin);
-            clear_arrbuffer(loop_mazzo, &input_check, 2);
+            clear_arrBuffer(loop_mazzo, &input_check, 2);
             clear_ansi();
 
             if (*loop_mazzo == 'd' && avanti_lista < len_Mazzo && input_check == 1)
@@ -2507,7 +2507,7 @@ static void print_playername(int passa_Titolo, int sel_ManoMazzo, int stile_tito
         printf("\nErrore: nessun output Mazzo da stampare!");
     }
     if(stile_titolo != 0)
-        printf("\n"); // vai a capo, se viene stampato come "blocco", ovvero se viene chiamata questa funzione dalla funzione combatti, e non dalla funzione mem_menu.
+        printf("\n"); // vai a capo, se viene stampato come "blocco", ovvero se viene chiamata questa funzione dalla funzione start_game, e non dalla funzione mem_menu.
     return;
 }
 
@@ -2807,7 +2807,7 @@ static void validate_gamefield(Mazzo *passa_Arr[], int *prendi_selTar[2], int *c
     }
     return;
 }
-// Funzione static void che viene chiamata in combatti, fa cambiare l'output dei blocchi
+// Funzione static void che viene chiamata in start_game, fa cambiare l'output dei blocchi
 // in cui sono rappresentati in output sia i maghi che gli array mano/campo, fa cambiare
 // il loro modo di vederli.
 static void print_fieldtable(int Layer, int passa_posSel, int passa_Target){
@@ -2854,9 +2854,9 @@ static void print_fieldtable(int Layer, int passa_posSel, int passa_Target){
     return;
 }
 
-// Funzione static void chiamata da combatti che si occupa di far passare per indirizzo tutte le variabili
+// Funzione static void chiamata da start_game che si occupa di far passare per indirizzo tutte le variabili
 // che servono per trovare dove la posizione sul campo di battaglia di una determinata carta/mago,
-// e in game_input chiamato da combatti.
+// e in game_input chiamato da start_game.
 static void print_validchoices(int passa_giocatore, int *passa_SelTar[2], int *passa_checkLayer, int passa_Lato, int passa_Layer){
     if(fun_print == _show_all_selections || fun_print == _show_dmg_selections || fun_print == _show_only_creatures_dmg 
     || fun_print == _show_heal_selections || fun_print == _show_creature_summonings)
@@ -3018,7 +3018,7 @@ static void gamemode_menu(void)
          
         // restituisce un errore in output in caso non sia un input valido, oppure non ci sia alcun tipo di input
         // (esempio: viene premuto enter senza immettere nessun carattere).
-        clear_arrbuffer(input_mode, &ripeti_loop, 2);
+        clear_arrBuffer(input_mode, &ripeti_loop, 2);
         
         if (atoi(input_mode) == 1)
         {
@@ -3070,7 +3070,7 @@ static void magedeck_menu(int scegli_Giocatore, int *scegli_Deck)
         // si utilizza la funzione fgets per evitare fallace di sicurezza
         // che potrebbero avvenire utilizzando la funzione scanf in questo caso...
         fgets(nome_Mago, LEN, stdin);
-        clear_arrbuffer(nome_Mago, &input_char, 1);
+        clear_arrBuffer(nome_Mago, &input_char, 1);
 
         // Verifica se la stringa nome_Mago equivale ad altre stringhe di altri maghi.
         // se entrambi i valori delle condizioni sono 1.
@@ -3100,7 +3100,7 @@ static void magedeck_menu(int scegli_Giocatore, int *scegli_Deck)
         printf("1) Tenebre\n2) Vita\n3) Luce\n");
         printf("\nInserisci la classe da assegnare mago...\n");
         fgets(input_Classe, LEN, stdin);
-        clear_arrbuffer(input_Classe, NULL, 1);
+        clear_arrBuffer(input_Classe, NULL, 1);
 
         temp_classe = atoi(input_Classe);
 
@@ -3140,7 +3140,7 @@ static void magedeck_menu(int scegli_Giocatore, int *scegli_Deck)
         printf("\nInserisci il numero di carte che vuoi avere nel deck (il massimo che puoi scegliere e' di 60 carte)\n");
         fgets(prendi_Deck, LEN, stdin);
         
-        clear_arrbuffer(prendi_Deck, NULL, 1);
+        clear_arrBuffer(prendi_Deck, NULL, 1);
         *scegli_Deck = atoi(prendi_Deck);
 
         if (*scegli_Deck > 60)
@@ -3977,7 +3977,7 @@ static void attacca(Mazzo *sel_Carta, Mazzo *tar_Carta, Mago *tar_Mago, int *pos
         scan_mage(_none_memory);
         scan_deck(_none_memory, NULL, NULL, NULL, _none_side);
         
-        // quando event vale _dead_mage nella funzione combatti verra' stampato in output che il mago
+        // quando event vale _dead_mage nella funzione start_game verra' stampato in output che il mago
         // avversario in quel determinato turno e' stato sconfitto.
         event = _dead_mage;
     }

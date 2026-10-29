@@ -70,14 +70,14 @@ typedef struct Carta Mazzo;
 typedef struct Carta Mano;
 typedef struct Carta Campo;
 // -------------
-static void clear_arrbuffer(char *, int *, int);
+static void clear_arrBuffer(char *, int *, int);
 static void clear_ansi(void);
 // -------------
 // questa funzione semplicemente rende l'input leggibile ad ogni chiamata fgets
 // esattamente come lo vuole intendere l'utente, ed anche a prova di utente
 // che vuole testare, oppure sbaglia a immettere l'input in molteplici modi
 // questa funzione tenta di prevenire questo, in 2 strategie diverse
-static void clear_arrbuffer(char *Buffer, int *passa_input, int scelta_Buffer)
+static void clear_arrBuffer(char *Buffer, int *passa_input, int scelta_Buffer)
 {
     bool err_conferma = false;
 
