@@ -3,7 +3,7 @@
 
 
 ## To run using GCC compiler:
-```
+```bash
 gcc -c gamelib.c main.c -std=c11 -Wall
 
 gcc -o output-file main.o gamelib.o -std=c11 -Wall
