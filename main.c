@@ -21,27 +21,28 @@ int main(void)
     clear_ansi(); // redraws the entire screen if input is undesired
     do
     {
-    printf(CLR YEL BOL "                      *@@@@@                                                                                                                                \n");
-    printf(YEL BOL "                   @@@     @@@@@,                                         @@@                                                                                   \n");
-    printf(RED BOL "                 .@@.                                                                                                                                           \n");
-    printf(RED BOL "  @@@@@@@@       @@@.      *@@@@.  @@@@@@@ @@@.@@@@@   @@@@@@@#@@@@&@@@**@@@   @@@@@@@                                                                          \n");
-    printf(YEL BOL "       @@@(      /@@@         (@@*@@@@&     @@@   @@@ @@@@@     @@@      @@@  @@*                                                                               \n");
-    printf(YEL BOL "  *@@@ @@@(       ,@@@@#      (@@ @@@       @@@   @@# @@@       @@@      @@@  @@@    #                                                                          \n");
-    printf(RED BOL "  @@@@@ @@@@/        (@@@@@@@.     @@@@@@   @@*   @@*  @@@@@@   @@@      @@@   @@@@@#                                                                           \n" CLR);
-    printf("                                                                                                                                                                        \n");
-    printf("                                                                                                                                                                        \n");
-    printf(YEL BOL "                               .                                                                                                                                \n");
-    printf(RED BOL "                          @@@( @@@@@@@                         .@@@          @@@, /@@@@@@@                                                                      \n");
-    printf(RED BOL "                        (@@@      *.                            @@@        @@@        *                                                                         \n");
-    printf(YEL BOL "                        @@@             /@@@@@     /@ .@@. ,@@@@#@@       .@@#        ,@@.  /@@@@@.  .@.  *@@@  *@@@     ,@@(                                   \n");
-    printf(YEL BOL "                        @@@#           @@@  @@@*  @@@.  . @@@   @@@       .@@@    @@.  @@@#@@@  @@@& (@@@*  @@@*  @@@  @@@*@@#                                  \n");
-    printf(RED BOL "                         @@@@           .@@@@@@*  @@@     @@&   @@@        @@@@*        @@&  @@@@@@&  @@@   @@@   @@@  @@(                                      \n");
-    printf(RED BOL "                          *@@@@*  @@@@.@@@*@@@@@@*@@@     @@@@@@@@@@&        @@@@@@@@@@@,  @@@*@@@@@@(@@@   @@@   @@@@(@@@@(&@@                                 \n");
-    printf(YEL BOL "                                    /@                                                                                                                          \n");
-    printf(YEL BOL "                                    /@                                                                                                                          \n" CLR);
+        printf(CLR YEL BOL "                      *@@@@@                                                                                                                                \n");
+        printf(YEL BOL "                   @@@     @@@@@,                                         @@@                                                                                   \n");
+        printf(RED BOL "                 .@@.                                                                                                                                           \n");
+        printf(RED BOL "  @@@@@@@@       @@@.      *@@@@.  @@@@@@@ @@@.@@@@@   @@@@@@@#@@@@&@@@**@@@   @@@@@@@                                                                          \n");
+        printf(YEL BOL "       @@@(      /@@@         (@@*@@@@&     @@@   @@@ @@@@@     @@@      @@@  @@*                                                                               \n");
+        printf(YEL BOL "  *@@@ @@@(       ,@@@@#      (@@ @@@       @@@   @@# @@@       @@@      @@@  @@@    #                                                                          \n");
+        printf(RED BOL "  @@@@@ @@@@/        (@@@@@@@.     @@@@@@   @@*   @@*  @@@@@@   @@@      @@@   @@@@@#                                                                           \n" CLR);
+        printf("                                                                                                                                                                        \n");
+        printf("                                                                                                                                                                        \n");
+        printf(YEL BOL "                               .                                                                                                                                \n");
+        printf(RED BOL "                          @@@( @@@@@@@                         .@@@          @@@, /@@@@@@@                                                                      \n");
+        printf(RED BOL "                        (@@@      *.                            @@@        @@@        *                                                                         \n");
+        printf(YEL BOL "                        @@@             /@@@@@     /@ .@@. ,@@@@#@@       .@@#        ,@@.  /@@@@@.  .@.  *@@@  *@@@     ,@@(                                   \n");
+        printf(YEL BOL "                        @@@#           @@@  @@@*  @@@.  . @@@   @@@       .@@@    @@.  @@@#@@@  @@@& (@@@*  @@@*  @@@  @@@*@@#                                  \n");
+        printf(RED BOL "                         @@@@           .@@@@@@*  @@@     @@&   @@@        @@@@*        @@&  @@@@@@&  @@@   @@@   @@@  @@(                                      \n");
+        printf(RED BOL "                          *@@@@*  @@@@.@@@*@@@@@@*@@@     @@@@@@@@@@&        @@@@@@@@@@@,  @@@*@@@@@@(@@@   @@@   @@@@(@@@@(&@@                                 \n");
+        printf(YEL BOL "                                    /@                                                                                                                          \n");
+        printf(YEL BOL "                                    /@                                                                                                                          \n\n" CLR);
 
         printf("Hello and welcome to ");
-        printf(BOL "a Generic Card Game!\n" CLR);
+        printf(BOL "a Generic Card Game" CLR);
+        printf("!\n");
         printf("1) Setup Game\n2) Fight\n3) Quit\n4) Game Data\n5) Guide\n");
         printf("\nPlease select one of these...\n");
 
